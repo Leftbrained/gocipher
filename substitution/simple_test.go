@@ -6,38 +6,38 @@ import (
 	"testing"
 )
 
-func TestSimpleNew(t *testing.T) {
+func TestMonoalphabeticNew(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDcB")
 
-	c, err := NewSimple(plain, cipher)
+	c, err := NewMonoalphabetic(plain, cipher)
 
 	if c == nil || err != nil {
 		t.Fatalf(`could not instantiate`)
 	}
 }
 
-func TestSimpleNewErrorPlainBigger(t *testing.T) {
+func TestMonoalphabeticNewErrorPlainBigger(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDc")
 
-	c, err := NewSimple(plain, cipher)
+	c, err := NewMonoalphabetic(plain, cipher)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
 	}
 }
 
-func TestSimpleNewErrorCipherBigger(t *testing.T) {
+func TestMonoalphabeticNewErrorCipherBigger(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDc")
 
-	c, err := NewSimple(plain, cipher)
+	c, err := NewMonoalphabetic(plain, cipher)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
 	}
 }
 
-func TestSimpleEncrypt(t *testing.T) {
-	c, _ := NewSimple([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
+func TestMonoalphabeticEncrypt(t *testing.T) {
+	c, _ := NewMonoalphabetic([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
 
 	cipher := c.Encrypt([]byte("A Man, A Plan, A Canal - Panama!"))
 
@@ -46,8 +46,8 @@ func TestSimpleEncrypt(t *testing.T) {
 	}
 }
 
-func TestSimpleDecrypt(t *testing.T) {
-	c, _ := NewSimple([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
+func TestMonoalphabeticDecrypt(t *testing.T) {
+	c, _ := NewMonoalphabetic([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
 
 	cipher := c.Decrypt([]byte("B Nbo, B Qmbo, B Dbobm - Qbobnb!"))
 
@@ -78,11 +78,11 @@ var benchmarkArgs = []struct {
 	},
 }
 
-func BenchmarkSimpleNew(b *testing.B) {
+func BenchmarkMonoalphabeticNew(b *testing.B) {
 	for _, a := range benchmarkArgs {
 		b.Run(fmt.Sprintf("size=%d", len(a.plain)), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, _ = NewSimple(a.plain, a.cipher)
+				_, _ = NewMonoalphabetic(a.plain, a.cipher)
 			}
 		})
 	}
@@ -95,8 +95,8 @@ Substitution ciphers can be compared with transposition ciphers. In a transposit
 There are a number of different types of substitution cipher. If the cipher operates on single letters, it is termed a simple substitution cipher; a cipher that operates on larger groups of letters is termed polygraphic. A monoalphabetic cipher uses fixed substitution over the entire message, whereas a polyalphabetic cipher uses a number of substitutions at different positions in the message, where a unit from the plaintext is mapped to one of several possibilities in the ciphertext and vice versa.
 `)
 
-func BenchmarkSimpleCrypt(b *testing.B) {
-	c, _ := NewSimple([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
+func BenchmarkMonoalphabeticCrypt(b *testing.B) {
+	c, _ := NewMonoalphabetic([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

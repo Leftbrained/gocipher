@@ -7,7 +7,7 @@ import (
 )
 
 func TestSubstitutionNew(t *testing.T) {
-	plain, cipher := []byte("cBda"), []byte("aDcB")
+	plain, cipher := []byte("ABCD"), []byte("BCDA")
 
 	c, err := NewSubstitution(plain, cipher)
 
@@ -17,7 +17,7 @@ func TestSubstitutionNew(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
-	plain, cipher := []byte("cBda"), []byte("aDc")
+	plain, cipher := []byte("ABCD"), []byte("BCD")
 
 	c, err := NewSubstitution(plain, cipher)
 
@@ -27,7 +27,27 @@ func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
-	plain, cipher := []byte("cBda"), []byte("aDc")
+	plain, cipher := []byte("ABC"), []byte("BCDA")
+
+	c, err := NewSubstitution(plain, cipher)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
+	plain, cipher := []byte("ABBD"), []byte("BCDA")
+
+	c, err := NewSubstitution(plain, cipher)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestSubstitutionNewErrorCipherDuplicate(t *testing.T) {
+	plain, cipher := []byte("ABCD"), []byte("BCBA")
 
 	c, err := NewSubstitution(plain, cipher)
 
@@ -52,7 +72,7 @@ func TestSubstitutionDecrypt(t *testing.T) {
 	cipher := c.Decrypt([]byte("B Nbo, B Qmbo, B Dbobm - Qbobnb!"))
 
 	if !bytes.Equal(cipher, []byte("A Man, A Plan, A Canal - Panama!")) {
-		t.Fatalf("invalid encryption")
+		t.Fatalf("invalid decryption")
 	}
 }
 

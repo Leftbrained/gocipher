@@ -17,6 +17,14 @@ func NewSubstitution(plainAlphabet, cipherAlphabet []byte) (*Substitution, error
 		return nil, fmt.Errorf("size mismatch between plain and cipher alphabets")
 	}
 
+	if hasDuplicates(plainAlphabet) {
+		return nil, fmt.Errorf("plain alphabet has duplicates")
+	}
+
+	if hasDuplicates(cipherAlphabet) {
+		return nil, fmt.Errorf("cipher alphabet has duplicates")
+	}
+
 	c := Substitution{
 		encrypt: make(map[byte]byte, size),
 		decrypt: make(map[byte]byte, size),
@@ -47,4 +55,17 @@ func (c *Substitution) Encrypt(plaintext []byte) []byte {
 
 func (c *Substitution) Decrypt(ciphertext []byte) []byte {
 	return c.crypt(c.decrypt, ciphertext)
+}
+
+func hasDuplicates(s []byte) bool {
+	found := make(map[byte]bool, len(s))
+
+	for _, b := range s {
+		if _, ok := found[b]; ok {
+			return true
+		}
+		found[b] = true
+	}
+
+	return false
 }

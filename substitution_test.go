@@ -115,11 +115,20 @@ Substitution ciphers can be compared with transposition ciphers. In a transposit
 There are a number of different types of substitution cipher. If the cipher operates on single letters, it is termed a simple substitution cipher; a cipher that operates on larger groups of letters is termed polygraphic. A monoalphabetic cipher uses fixed substitution over the entire message, whereas a polyalphabetic cipher uses a number of substitutions at different positions in the message, where a unit from the plaintext is mapped to one of several possibilities in the ciphertext and vice versa.
 `)
 
-func BenchmarkSubstitutionCrypt(b *testing.B) {
+func BenchmarkSubstitutionEncrypt(b *testing.B) {
 	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = c.crypt(c.encrypt, benchmarkPlaintext)
+		_ = c.Encrypt(benchmarkPlaintext)
+	}
+}
+
+func BenchmarkSubstitutionDecrypt(b *testing.B) {
+	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = c.Decrypt(benchmarkPlaintext)
 	}
 }

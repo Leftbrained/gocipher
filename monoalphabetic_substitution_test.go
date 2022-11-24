@@ -100,6 +100,6 @@ func BenchmarkMonoalphabeticSubstitutionCrypt(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		_ = c.crypt(c.encryptMapping, benchmarkPlaintext)
+		_ = c.crypt(c.encrypt, benchmarkPlaintext)
 	}
 }

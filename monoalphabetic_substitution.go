@@ -5,8 +5,8 @@ import (
 )
 
 type MonoalphabeticSubstitution struct {
-	encryptMapping map[byte]byte
-	decryptMapping map[byte]byte
+	encrypt map[byte]byte
+	decrypt map[byte]byte
 }
 
 func NewMonoalphabeticSubstitution(plainAlphabet, cipherAlphabet []byte) (*MonoalphabeticSubstitution, error) {
@@ -18,14 +18,14 @@ func NewMonoalphabeticSubstitution(plainAlphabet, cipherAlphabet []byte) (*Monoa
 	}
 
 	c := MonoalphabeticSubstitution{
-		encryptMapping: make(map[byte]byte, size),
-		decryptMapping: make(map[byte]byte, size),
+		encrypt: make(map[byte]byte, size),
+		decrypt: make(map[byte]byte, size),
 	}
 
 	for i, plain := range plainAlphabet {
 		cipher := cipherAlphabet[i]
-		c.encryptMapping[plain] = cipher
-		c.decryptMapping[cipher] = plain
+		c.encrypt[plain] = cipher
+		c.decrypt[cipher] = plain
 	}
 
 	return &c, nil
@@ -42,9 +42,9 @@ func (c *MonoalphabeticSubstitution) crypt(mapping map[byte]byte, text []byte) [
 }
 
 func (c *MonoalphabeticSubstitution) Encrypt(plaintext []byte) []byte {
-	return c.crypt(c.encryptMapping, plaintext)
+	return c.crypt(c.encrypt, plaintext)
 }
 
 func (c *MonoalphabeticSubstitution) Decrypt(ciphertext []byte) []byte {
-	return c.crypt(c.decryptMapping, ciphertext)
+	return c.crypt(c.decrypt, ciphertext)
 }

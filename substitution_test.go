@@ -6,38 +6,38 @@ import (
 	"testing"
 )
 
-func TestMonoalphabeticSubstitutionNew(t *testing.T) {
+func TestSubstitutionNew(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDcB")
 
-	c, err := NewMonoalphabeticSubstitution(plain, cipher)
+	c, err := NewSubstitution(plain, cipher)
 
 	if c == nil || err != nil {
 		t.Fatalf(`could not instantiate`)
 	}
 }
 
-func TestMonoalphabeticSubstitutionNewErrorPlainBigger(t *testing.T) {
+func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDc")
 
-	c, err := NewMonoalphabeticSubstitution(plain, cipher)
+	c, err := NewSubstitution(plain, cipher)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
 	}
 }
 
-func TestMonoalphabeticSubstitutionNewErrorCipherBigger(t *testing.T) {
+func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
 	plain, cipher := []byte("cBda"), []byte("aDc")
 
-	c, err := NewMonoalphabeticSubstitution(plain, cipher)
+	c, err := NewSubstitution(plain, cipher)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
 	}
 }
 
-func TestMonoalphabeticSubstitutionEncrypt(t *testing.T) {
-	c, _ := NewMonoalphabeticSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
+func TestSubstitutionEncrypt(t *testing.T) {
+	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
 
 	cipher := c.Encrypt([]byte("A Man, A Plan, A Canal - Panama!"))
 
@@ -46,8 +46,8 @@ func TestMonoalphabeticSubstitutionEncrypt(t *testing.T) {
 	}
 }
 
-func TestMonoalphabeticSubstitutionDecrypt(t *testing.T) {
-	c, _ := NewMonoalphabeticSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
+func TestSubstitutionDecrypt(t *testing.T) {
+	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("BCDEFGHIJKLMNOPQRSTUVWXYZAbcdefghijklmnopqrstuvwxyza"))
 
 	cipher := c.Decrypt([]byte("B Nbo, B Qmbo, B Dbobm - Qbobnb!"))
 
@@ -78,11 +78,11 @@ var benchmarkArgs = []struct {
 	},
 }
 
-func BenchmarkMonoalphabeticSubstitutionNew(b *testing.B) {
+func BenchmarkSubstitutionNew(b *testing.B) {
 	for _, a := range benchmarkArgs {
 		b.Run(fmt.Sprintf("size=%d", len(a.plain)), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, _ = NewMonoalphabeticSubstitution(a.plain, a.cipher)
+				_, _ = NewSubstitution(a.plain, a.cipher)
 			}
 		})
 	}
@@ -92,11 +92,11 @@ var benchmarkPlaintext = []byte(`In cryptography, a substitution cipher is a met
 
 Substitution ciphers can be compared with transposition ciphers. In a transposition cipher, the units of the plaintext are rearranged in a different and usually quite complex order, but the units themselves are left unchanged. By contrast, in a substitution cipher, the units of the plaintext are retained in the same sequence in the ciphertext, but the units themselves are altered.
 
-There are a number of different types of substitution cipher. If the cipher operates on single letters, it is termed a simple substitution cipher; a cipher that operates on larger groups of letters is termed polygraphic. A monoalphabeticSubstitution cipher uses fixed substitution over the entire message, whereas a polyalphabetic cipher uses a number of substitutions at different positions in the message, where a unit from the plaintext is mapped to one of several possibilities in the ciphertext and vice versa.
+There are a number of different types of substitution cipher. If the cipher operates on single letters, it is termed a simple substitution cipher; a cipher that operates on larger groups of letters is termed polygraphic. A monoalphabetic cipher uses fixed substitution over the entire message, whereas a polyalphabetic cipher uses a number of substitutions at different positions in the message, where a unit from the plaintext is mapped to one of several possibilities in the ciphertext and vice versa.
 `)
 
-func BenchmarkMonoalphabeticSubstitutionCrypt(b *testing.B) {
-	c, _ := NewMonoalphabeticSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
+func BenchmarkSubstitutionCrypt(b *testing.B) {
+	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"), []byte("ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"))
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

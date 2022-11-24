@@ -4,12 +4,12 @@ import (
 	"fmt"
 )
 
-type MonoalphabeticSubstitution struct {
+type Substitution struct {
 	encrypt map[byte]byte
 	decrypt map[byte]byte
 }
 
-func NewMonoalphabeticSubstitution(plainAlphabet, cipherAlphabet []byte) (*MonoalphabeticSubstitution, error) {
+func NewSubstitution(plainAlphabet, cipherAlphabet []byte) (*Substitution, error) {
 
 	size := len(plainAlphabet)
 
@@ -17,7 +17,7 @@ func NewMonoalphabeticSubstitution(plainAlphabet, cipherAlphabet []byte) (*Monoa
 		return nil, fmt.Errorf("size mismatch between plain and cipher alphabets")
 	}
 
-	c := MonoalphabeticSubstitution{
+	c := Substitution{
 		encrypt: make(map[byte]byte, size),
 		decrypt: make(map[byte]byte, size),
 	}
@@ -31,7 +31,7 @@ func NewMonoalphabeticSubstitution(plainAlphabet, cipherAlphabet []byte) (*Monoa
 	return &c, nil
 }
 
-func (c *MonoalphabeticSubstitution) crypt(mapping map[byte]byte, text []byte) []byte {
+func (c *Substitution) crypt(mapping map[byte]byte, text []byte) []byte {
 	for i, from := range text {
 		if to, ok := mapping[from]; ok {
 			text[i] = to
@@ -41,10 +41,10 @@ func (c *MonoalphabeticSubstitution) crypt(mapping map[byte]byte, text []byte) [
 	return text
 }
 
-func (c *MonoalphabeticSubstitution) Encrypt(plaintext []byte) []byte {
+func (c *Substitution) Encrypt(plaintext []byte) []byte {
 	return c.crypt(c.encrypt, plaintext)
 }
 
-func (c *MonoalphabeticSubstitution) Decrypt(ciphertext []byte) []byte {
+func (c *Substitution) Decrypt(ciphertext []byte) []byte {
 	return c.crypt(c.decrypt, ciphertext)
 }

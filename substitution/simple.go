@@ -1,7 +1,6 @@
 package substitution
 
 import (
-	"bytes"
 	"fmt"
 )
 
@@ -32,18 +31,14 @@ func NewSimple(plainAlphabet, cipherAlphabet []byte) (*SimpleCipher, error) {
 	return &c, nil
 }
 
-func (c *SimpleCipher) crypt(mapping map[byte]byte, fromtext []byte) []byte {
-	totext := bytes.Buffer{}
-
-	for _, from := range fromtext {
+func (c *SimpleCipher) crypt(mapping map[byte]byte, text []byte) []byte {
+	for i, from := range text {
 		if to, ok := mapping[from]; ok {
-			totext.WriteByte(to)
-		} else {
-			totext.WriteByte(from)
+			text[i] = to
 		}
 	}
 
-	return totext.Bytes()
+	return text
 }
 
 func (c *SimpleCipher) Encrypt(plaintext []byte) []byte {

@@ -7,9 +7,7 @@ import (
 )
 
 func TestSubstitutionNew(t *testing.T) {
-	plain, cipher := []byte("ABCD"), []byte("BCDA")
-
-	c, err := NewSubstitution(plain, cipher)
+	c, err := NewSubstitution([]byte("ABCD"), []byte("WXYZ"))
 
 	if c == nil || err != nil {
 		t.Fatalf(`could not instantiate`)
@@ -17,9 +15,7 @@ func TestSubstitutionNew(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
-	plain, cipher := []byte("ABCD"), []byte("BCD")
-
-	c, err := NewSubstitution(plain, cipher)
+	c, err := NewSubstitution([]byte("ABCD"), []byte("WXY"))
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -27,9 +23,7 @@ func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
-	plain, cipher := []byte("ABC"), []byte("BCDA")
-
-	c, err := NewSubstitution(plain, cipher)
+	c, err := NewSubstitution([]byte("ABC"), []byte("WXYZ"))
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -37,9 +31,7 @@ func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
-	plain, cipher := []byte("ABBD"), []byte("BCDA")
-
-	c, err := NewSubstitution(plain, cipher)
+	c, err := NewSubstitution([]byte("ABBD"), []byte("WXYZ"))
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -47,9 +39,7 @@ func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
 }
 
 func TestSubstitutionNewErrorCipherDuplicate(t *testing.T) {
-	plain, cipher := []byte("ABCD"), []byte("BCBA")
-
-	c, err := NewSubstitution(plain, cipher)
+	c, err := NewSubstitution([]byte("ABCD"), []byte("WXYX"))
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")

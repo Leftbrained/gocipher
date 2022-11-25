@@ -1,7 +1,6 @@
 package gocipher
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -45,24 +44,17 @@ func TestSubstitutionNewErrorCipherDuplicate(t *testing.T) {
 	}
 }
 
-func TestSubstitutionBasicEncrypt(t *testing.T) {
-	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
-
-	cipher := c.Encrypt([]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
-
-	if !bytes.Equal(cipher, []byte("QATLSHYDRMJVIOJWBSFKNJUTMQATECZXPJG")) {
-		t.Fatalf("invalid encryption: %s", cipher)
+func TestSubstitutionBasicCrypt(t *testing.T) {
+	c, err := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
+	if err != nil {
+		t.Fatalf("unexpected: could not instantiate")
 	}
-}
 
-func TestSubstitutionBasicDecrypt(t *testing.T) {
-	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
-
-	plain := c.Decrypt([]byte("QATLSHYDRMJVIOJWBSFKNJUTMQATECZXPJG"))
-
-	if !bytes.Equal(plain, []byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG")) {
-		t.Fatalf("invalid decryption: %s", string(plain))
-	}
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("QATLSHYDRMJVIOJWBSFKNJUTMQATECZXPJG"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
 }
 
 func BenchmarkSubstitutionEncrypt(b *testing.B) {

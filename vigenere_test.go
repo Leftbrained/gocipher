@@ -1,7 +1,6 @@
 package gocipher
 
 import (
-	"bytes"
 	"testing"
 )
 
@@ -37,30 +36,17 @@ func TestVigenereNewErrorUpperBound(t *testing.T) {
 	}
 }
 
-func TestVigenereBasicEncrypt(t *testing.T) {
+func TestVigenereBasicCrypt(t *testing.T) {
 	c, err := NewVigenere([]byte("CRYPTOGRAPHY"))
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
 
-	cipher := c.Encrypt([]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
-
-	if !bytes.Equal(cipher, []byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN")) {
-		t.Fatalf("invalid encryption: %s", cipher)
-	}
-}
-
-func TestVigenereBasicDecrypt(t *testing.T) {
-	c, err := NewVigenere([]byte("CRYPTOGRAPHY"))
-	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
-	}
-
-	plain := c.Decrypt([]byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN"))
-
-	if !bytes.Equal(plain, []byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG")) {
-		t.Fatalf("invalid decryption: %s", string(plain))
-	}
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
 }
 
 func BenchmarkVigenereEncrypt(b *testing.B) {

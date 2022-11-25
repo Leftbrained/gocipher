@@ -6,11 +6,11 @@ import (
 )
 
 type Playfair struct {
-	grid    [][]playfairCell
-	letters map[byte]playfairCell
+	grid    [][]PlayfairCell
+	letters map[byte]PlayfairCell
 }
 
-type playfairCell struct {
+type PlayfairCell struct {
 	letter byte
 	x      int
 	y      int
@@ -18,12 +18,12 @@ type playfairCell struct {
 
 func NewPlayfair(key []byte) (*Playfair, error) {
 	c := Playfair{
-		grid:    make([][]playfairCell, 5),
-		letters: make(map[byte]playfairCell, 25),
+		grid:    make([][]PlayfairCell, 5),
+		letters: make(map[byte]PlayfairCell, 25),
 	}
 
-	for x := 0; x < 5; x++ {
-		c.grid[x] = make([]playfairCell, 5)
+	for y := 0; y < 5; y++ {
+		c.grid[y] = make([]PlayfairCell, 5)
 	}
 
 	var i int
@@ -40,7 +40,7 @@ func NewPlayfair(key []byte) (*Playfair, error) {
 			continue
 		}
 
-		cell := playfairCell{
+		cell := PlayfairCell{
 			letter: k,
 			x:      i % 5,
 			y:      i / 5,
@@ -56,7 +56,7 @@ func NewPlayfair(key []byte) (*Playfair, error) {
 			continue
 		}
 
-		cell := playfairCell{
+		cell := PlayfairCell{
 			letter: k,
 			x:      i % 5,
 			y:      i / 5,
@@ -74,7 +74,7 @@ func (c *Playfair) crypt(text []byte, swap func(x1, y1, x2, y2 int) (int, int, i
 	buffer := bytes.NewBuffer([]byte{})
 
 	for i := 0; i < len(text); {
-		var cell1 *playfairCell
+		var cell1 *PlayfairCell
 		cell1, i = c.getUnigram(text[i:], i)
 		if cell1 == nil {
 			// No more letters
@@ -83,7 +83,7 @@ func (c *Playfair) crypt(text []byte, swap func(x1, y1, x2, y2 int) (int, int, i
 
 		cell2, j := c.getUnigram(text[i:], i)
 		if cell2 == nil || cell1.letter == cell2.letter {
-			var cell playfairCell
+			var cell PlayfairCell
 			if cell1.letter == 88 {
 				// Inserting a Q because cell1 is an X
 				cell = c.letters[81]
@@ -133,7 +133,7 @@ func (c *Playfair) Decrypt(text []byte) []byte {
 	})
 }
 
-func (c *Playfair) getUnigram(text []byte, i int) (*playfairCell, int) {
+func (c *Playfair) getUnigram(text []byte, i int) (*PlayfairCell, int) {
 	for _, from := range text {
 		if from == 74 {
 			// Converting J to I

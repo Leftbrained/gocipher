@@ -70,8 +70,8 @@ func NewPlayfair(key []byte) (*Playfair, error) {
 	return &c, nil
 }
 
-func (c *Playfair) crypt(text []byte, swap func(x1, y1, x2, y2 int) (int, int, int, int)) []byte {
-	buffer := bytes.NewBuffer([]byte{})
+func (c *Playfair) crypt(text []byte, shift int) []byte {
+	buffer := bytes.NewBuffer(make([]byte, 0, len(text)))
 
 	for i := 0; i < len(text); {
 		var cell1 *PlayfairCell
@@ -96,41 +96,31 @@ func (c *Playfair) crypt(text []byte, swap func(x1, y1, x2, y2 int) (int, int, i
 			i = j
 		}
 
-		x1, y1, x2, y2 := swap(cell1.x, cell1.y, cell2.x, cell2.y)
+		x1, y1, x2, y2 := cell1.x, cell1.y, cell2.x, cell2.y
+		switch {
+		case x1 == x2:
+			y1, y2 = (y1+shift)%5, (y2+shift)%5
+		case y1 == y2:
+			x1, x2 = (x1+shift)%5, (x2+shift)%5
+		default:
+			x2, x1 = x1, x2
+		}
 
-		buffer.WriteByte(c.grid[y1][x1].letter)
-		buffer.WriteByte(c.grid[y2][x2].letter)
+		buffer.Write([]byte{
+			c.grid[y1][x1].letter,
+			c.grid[y2][x2].letter,
+		})
 	}
 
 	return buffer.Bytes()
 }
 
 func (c *Playfair) Encrypt(text []byte) []byte {
-	return c.crypt(text, func(x1, y1, x2, y2 int) (int, int, int, int) {
-		switch {
-		case x1 == x2:
-			y1, y2 = (y1+1)%5, (y2+1)%5
-		case y1 == y2:
-			x1, x2 = (x1+1)%5, (x2+1)%5
-		default:
-			x2, x1 = x1, x2
-		}
-		return x1, y1, x2, y2
-	})
+	return c.crypt(text, 1)
 }
 
 func (c *Playfair) Decrypt(text []byte) []byte {
-	return c.crypt(text, func(x1, y1, x2, y2 int) (int, int, int, int) {
-		switch {
-		case x1 == x2:
-			y1, y2 = (y1+4)%5, (y2+4)%5
-		case y1 == y2:
-			x1, x2 = (x1+4)%5, (x2+4)%5
-		default:
-			x2, x1 = x1, x2
-		}
-		return x1, y1, x2, y2
-	})
+	return c.crypt(text, 4)
 }
 
 func (c *Playfair) getUnigram(text []byte, i int) (*PlayfairCell, int) {

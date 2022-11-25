@@ -36,15 +36,15 @@ func NewVigenere(key []byte) (*Vigenere, error) {
 }
 
 func (c *Vigenere) Encrypt(text []byte) []byte {
-	for i, b := range text {
-		text[i] = c.ciphers[i%c.keyLen].Encrypt([]byte{b})[0]
+	for i := 0; i < len(text); i++ {
+		text[i] = c.ciphers[i%c.keyLen].Encrypt(text[i : i+1])[0]
 	}
 	return text
 }
 
 func (c *Vigenere) Decrypt(text []byte) []byte {
-	for i, b := range text {
-		text[i] = c.ciphers[i%c.keyLen].Decrypt([]byte{b})[0]
+	for i := 0; i < len(text); i++ {
+		text[i] = c.ciphers[i%c.keyLen].Decrypt(text[i : i+1])[0]
 	}
 	return text
 }

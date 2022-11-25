@@ -41,15 +41,46 @@ func TestVigenereNewErrorUpperBound(t *testing.T) {
 	}
 }
 
-func TestVigenereEncrypt(t *testing.T) {
-	c, err := NewVigenere([]byte("VIG"))
+func TestVigenereBasicEncrypt(t *testing.T) {
+	c, err := NewVigenere([]byte("CRYPTOGRAPHY"))
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
 
-	cipher := c.Encrypt([]byte("CRYPTOGRAPHY"))
+	cipher := c.Encrypt([]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
 
-	if !bytes.Equal(cipher, []byte("XZEKBUBZGKPE")) {
+	if !bytes.Equal(cipher, []byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN")) {
 		t.Fatalf("invalid encryption")
+	}
+}
+
+func TestVigenereBasicDecrypt(t *testing.T) {
+	c, err := NewVigenere([]byte("CRYPTOGRAPHY"))
+	if err != nil {
+		t.Fatalf("unexpected: could not instantiate")
+	}
+
+	cipher := c.Decrypt([]byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN"))
+
+	if !bytes.Equal(cipher, []byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG")) {
+		t.Fatalf("invalid decryption")
+	}
+}
+
+func BenchmarkVigenereEncrypt(b *testing.B) {
+	c, _ := NewVigenere([]byte("CRYPTOGRAPHY"))
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = c.Encrypt([]byte("INCRYPTOGRAPHYASUBSTITUTIONCIPHERISAMETHODOFENCRYPTINGINWHICHUNITSOFPLAINTEXTAREREPLACEDWITHTHECIPHERTEXTINADEFINEDMANNERWITHTHEHELPOFAKEY"))
+	}
+}
+
+func BenchmarkVigenereDecrypt(b *testing.B) {
+	c, _ := NewVigenere([]byte("CRYPTOGRAPHY"))
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = c.Decrypt([]byte("KEAGRDZFGGHNJPYHNPYKIIBRKFLRBDNVRXZYOVRWHRUWECJPAGRXGUOEWWPAJLLXMGUWPAHGPKCMMOXVRTWJCTCSPWZYTWLAKGFTKHKOTXUYFVDXGSJDACUCTNGIAHNVHTSNQWYZXM"))
 	}
 }

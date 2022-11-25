@@ -6,7 +6,6 @@ import (
 )
 
 func TestVigenereNew(t *testing.T) {
-
 	c, err := NewVigenere([]byte("ABYZ"))
 
 	if c == nil || err != nil {
@@ -15,7 +14,6 @@ func TestVigenereNew(t *testing.T) {
 }
 
 func TestVigenereNewErrorLowercase(t *testing.T) {
-
 	c, err := NewVigenere([]byte("AbYZ"))
 
 	if c != nil || err == nil {
@@ -24,7 +22,6 @@ func TestVigenereNewErrorLowercase(t *testing.T) {
 }
 
 func TestVigenereNewErrorLowerBound(t *testing.T) {
-
 	c, err := NewVigenere([]byte("A@YZ"))
 
 	if c != nil || err == nil {
@@ -33,7 +30,6 @@ func TestVigenereNewErrorLowerBound(t *testing.T) {
 }
 
 func TestVigenereNewErrorUpperBound(t *testing.T) {
-
 	c, err := NewVigenere([]byte("A[YZ"))
 
 	if c != nil || err == nil {
@@ -50,7 +46,7 @@ func TestVigenereBasicEncrypt(t *testing.T) {
 	cipher := c.Encrypt([]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"))
 
 	if !bytes.Equal(cipher, []byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN")) {
-		t.Fatalf("invalid encryption")
+		t.Fatalf("invalid encryption: %s", cipher)
 	}
 }
 
@@ -60,10 +56,10 @@ func TestVigenereBasicDecrypt(t *testing.T) {
 		t.Fatalf("unexpected: could not instantiate")
 	}
 
-	cipher := c.Decrypt([]byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN"))
+	plain := c.Decrypt([]byte("VYCFNWIBBGVUPWMMCISGSDCCTKFTEOFPDDN"))
 
-	if !bytes.Equal(cipher, []byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG")) {
-		t.Fatalf("invalid decryption")
+	if !bytes.Equal(plain, []byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG")) {
+		t.Fatalf("invalid decryption: %s", string(plain))
 	}
 }
 

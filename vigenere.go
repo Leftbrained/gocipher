@@ -7,9 +7,7 @@ type Vigenere struct {
 	ciphers []Cipher
 }
 
-var (
-	vignereAlphabet = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")
-)
+var vignereAlphabet = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 func NewVigenere(key []byte) (*Vigenere, error) {
 	size := len(key)

@@ -7,18 +7,34 @@ type Adfgvx struct {
 	transposition Cipher
 }
 
-func NewAdfgvx(alphabet, key []byte) (*Adfgvx, error) {
+type AdfgvxConfig struct {
+	newPolybius      func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)
+	newTransposition func(key []byte) (*Transposition, error)
+}
+
+type AdfgvxOption func(*AdfgvxConfig)
+
+func NewAdfgvx(alphabet, key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
+	cfg := &AdfgvxConfig{
+		newPolybius:      NewPolybius,
+		newTransposition: NewTransposition,
+	}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
 	alphabetSize := len(alphabet)
 	if alphabetSize != 36 {
 		return nil, fmt.Errorf("expecting alphabet size to be 36, found: %d", alphabetSize)
 	}
 
-	polybius, err := NewPolybius(alphabet, PolybiusWithCoords([]byte("ADFGVX")))
+	polybius, err := cfg.newPolybius(alphabet, PolybiusWithCoords([]byte("ADFGVX")))
 	if err != nil {
 		return nil, fmt.Errorf("polybius: %s", err.Error())
 	}
 
-	transposition, err := NewTransposition(key)
+	transposition, err := cfg.newTransposition(key)
 	if err != nil {
 		return nil, fmt.Errorf("transposition: %s", err.Error())
 	}
@@ -29,6 +45,18 @@ func NewAdfgvx(alphabet, key []byte) (*Adfgvx, error) {
 	}
 
 	return &c, nil
+}
+
+func AdfgvxWithNewPolybius(newPolybius func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)) AdfgvxOption {
+	return func(cfg *AdfgvxConfig) {
+		cfg.newPolybius = newPolybius
+	}
+}
+
+func AdfgvxWithNewTransposition(newTransposition func(key []byte) (*Transposition, error)) AdfgvxOption {
+	return func(cfg *AdfgvxConfig) {
+		cfg.newTransposition = newTransposition
+	}
 }
 
 func (c *Adfgvx) Encrypt(text []byte) []byte {

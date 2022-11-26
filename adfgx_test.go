@@ -1,11 +1,15 @@
 package gocipher
 
 import (
+	"fmt"
 	"testing"
 )
 
 func TestAdfgxNew(t *testing.T) {
-	c, err := NewAdfgx([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), []byte("ABYZ"))
+	c, err := NewAdfgx(
+		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+		[]byte("ABYZ"),
+	)
 
 	if c == nil || err != nil {
 		t.Fatalf(`could not instantiate`)
@@ -13,7 +17,38 @@ func TestAdfgxNew(t *testing.T) {
 }
 
 func TestAdfgxNewErrorAlphabetSize(t *testing.T) {
-	c, err := NewAdfgx([]byte("ABCDEFGHIKLMNOPQRSTUVWXY"), []byte("ABYZ"))
+	c, err := NewAdfgx(
+		[]byte("ABCDEFGHIKLMNOPQRSTUVWXY"),
+		[]byte("ABYZ"),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestAdfgxNewErrorInvalidPolybiusCipher(t *testing.T) {
+	c, err := NewAdfgx(
+		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+		[]byte("ABYZ"),
+		AdfgxWithNewPolybius(func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
+			return nil, fmt.Errorf("random failure")
+		}),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestAdfgxNewErrorInvalidTranspositionCipher(t *testing.T) {
+	c, err := NewAdfgx(
+		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+		[]byte("ABYZ"),
+		AdfgxWithNewTransposition(func(key []byte) (*Transposition, error) {
+			return nil, fmt.Errorf("random failure")
+		}),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")

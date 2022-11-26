@@ -10,7 +10,7 @@ func TestSubstitutionNew(t *testing.T) {
 	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
@@ -19,7 +19,7 @@ func TestSubstitutionBasicCrypt(t *testing.T) {
 		[]byte("CRYPTOGRAPHY"),
 	)
 	if err != nil {
-		t.Fatalf(`unexpected: could not instantiate: "%s"`, err.Error())
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
 	testCipherCrypt(c, t,
@@ -36,7 +36,7 @@ func TestSubstitutionNewWithPlainAlphabet(t *testing.T) {
 	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
@@ -47,7 +47,7 @@ func TestSubstitutionNewWithCipherAlphabet(t *testing.T) {
 	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
@@ -59,7 +59,7 @@ func TestSubstitutionNewWithAlphabets(t *testing.T) {
 	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 

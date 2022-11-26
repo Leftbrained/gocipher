@@ -5,17 +5,21 @@ import (
 )
 
 func TestTranspositionNew(t *testing.T) {
-	c, err := NewTransposition([]byte("ABCD"))
+	c, err := NewTransposition(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate`)
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
 func TestTranspositionBasicCrypt(t *testing.T) {
-	c, err := NewTransposition([]byte("CRYPTOGRAPHY"))
+	c, err := NewTransposition(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
 	testCipherCrypt(c, t,

@@ -11,7 +11,13 @@ type Polybius struct {
 	decrypt map[[2]byte]byte
 }
 
-func NewPolybius(alphabet []byte) (*Polybius, error) {
+type PolybiusConfig struct {
+	coords []byte
+}
+
+type PolybiusOption func(*PolybiusConfig)
+
+func NewPolybius(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
 	alphabetSize := len(alphabet)
 	size := int(math.Sqrt(float64(alphabetSize)))
 
@@ -24,18 +30,34 @@ func NewPolybius(alphabet []byte) (*Polybius, error) {
 		decrypt: make(map[[2]byte]byte, alphabetSize),
 	}
 
-	coords := []byte("123456")
+	cfg := &PolybiusConfig{
+		coords: []byte("123456"),
+	}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
+	if size > len(cfg.coords) {
+		return nil, fmt.Errorf("expecting coords size to be at least %d, found: %d", size, len(cfg.coords))
+	}
 
 	for i, plain := range alphabet {
 		x, y := i/size, i%size
 
-		cipher := [2]byte{coords[x], coords[y]}
+		cipher := [2]byte{cfg.coords[x], cfg.coords[y]}
 
 		c.encrypt[plain] = cipher
 		c.decrypt[cipher] = plain
 	}
 
 	return &c, nil
+}
+
+func PolybiusWithCoords(coords []byte) PolybiusOption {
+	return func(cfg *PolybiusConfig) {
+		cfg.coords = coords
+	}
 }
 
 func (c *Polybius) Encrypt(text []byte) []byte {

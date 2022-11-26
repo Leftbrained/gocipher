@@ -9,7 +9,7 @@ func TestPolybiusNewFive(t *testing.T) {
 	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"))
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate`)
+		t.Fatalf(`could not instantiate: %s`, err.Error())
 	}
 }
 
@@ -17,7 +17,7 @@ func TestPolybiusNewSix(t *testing.T) {
 	c, err := NewPolybius([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate`)
+		t.Fatalf(`could not instantiate: %s`, err.Error())
 	}
 }
 

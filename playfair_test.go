@@ -49,6 +49,19 @@ func TestPlayfairBasicCrypt(t *testing.T) {
 	)
 }
 
+func TestPlayfairKeyWithJCrypt(t *testing.T) {
+	c, err := NewPlayfair([]byte("CRYPTOJRAPHY"))
+	if err != nil {
+		t.Fatalf("unexpected: could not instantiate")
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGS"),
+		[]byte("PBGMVOTDITAUWNHUOVQRLBRMYCIGNOWTLDKQ"),
+		[]byte("THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGS"),
+	)
+}
+
 func TestPlayfairDoubleLetterCrypt(t *testing.T) {
 	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
 	if err != nil {
@@ -85,6 +98,19 @@ func TestPlayfairExtraLetterCrypt(t *testing.T) {
 		[]byte("D"),
 		[]byte("IU"),
 		[]byte("DX"),
+	)
+}
+
+func TestPlayfairTrailingSkippedLettersCrypt(t *testing.T) {
+	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	if err != nil {
+		t.Fatalf("unexpected: could not instantiate")
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOGS?$@."),
+		[]byte("PBIMXDTDGTAUWNHUDXQRLBRMYCGINOWTLDBM"),
+		[]byte("THEQUICKBROWNFOXIUMPSOVERTHELAZYDOGS"),
 	)
 }
 

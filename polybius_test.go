@@ -29,6 +29,14 @@ func TestPolybiusNewErrorNotSquare(t *testing.T) {
 	}
 }
 
+func TestPolybiusNewErrorCoordsTooSmall(t *testing.T) {
+	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), PolybiusWithCoords([]byte("12")))
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
 func TestPolybiusBasicCrypt(t *testing.T) {
 	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"))
 	if err != nil {

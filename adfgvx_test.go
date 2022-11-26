@@ -12,6 +12,14 @@ func TestAdfgvxNew(t *testing.T) {
 	}
 }
 
+func TestAdfgvxNewErrorAlphabetSize(t *testing.T) {
+	c, err := NewAdfgvx([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345678"), []byte("ABYZ"))
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
 func TestAdfgvxBasicCrypt(t *testing.T) {
 	c, err := NewAdfgvx([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), []byte("CRYPTOGRAPHY"))
 	if err != nil {

@@ -10,7 +10,7 @@ type Adfgvx struct {
 func NewAdfgvx(alphabet, key []byte) (*Adfgvx, error) {
 	alphabetSize := len(alphabet)
 	if alphabetSize != 36 {
-		return nil, fmt.Errorf("expecting alphabet size to be 25, found: %d", alphabetSize)
+		return nil, fmt.Errorf("expecting alphabet size to be 36, found: %d", alphabetSize)
 	}
 
 	polybius, err := NewPolybius(alphabet, PolybiusWithCoords([]byte("ADFGVX")))

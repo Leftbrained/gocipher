@@ -8,7 +8,7 @@ type Vigenere struct {
 }
 
 type VigenereConfig struct {
-	newSubstitution func(key []byte, opts ...SubstitutionOption) (*Substitution, error)
+	newSubstitution func(key []byte, opts ...SubstitutionOption) (Cipher, error)
 }
 
 type VigenereOption func(*VigenereConfig)
@@ -23,7 +23,9 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	}
 
 	cfg := &VigenereConfig{
-		newSubstitution: NewSubstitution,
+		newSubstitution: func(key []byte, opts ...SubstitutionOption) (Cipher, error) {
+			return NewSubstitution(key, opts...)
+		},
 	}
 
 	for _, opt := range opts {
@@ -51,7 +53,7 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	return &c, nil
 }
 
-func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (*Substitution, error)) VigenereOption {
+func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (Cipher, error)) VigenereOption {
 	return func(cfg *VigenereConfig) {
 		cfg.newSubstitution = newSubstitution
 	}

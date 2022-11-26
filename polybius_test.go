@@ -5,24 +5,32 @@ import (
 	"testing"
 )
 
-func TestPolybiusNewFive(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"))
+func TestPolybiusNew(t *testing.T) {
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: %s`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
 func TestPolybiusNewSix(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate: %s`, err.Error())
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
 func TestPolybiusNewErrorNotSquare(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXY"))
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY")),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -30,7 +38,10 @@ func TestPolybiusNewErrorNotSquare(t *testing.T) {
 }
 
 func TestPolybiusNewErrorCoordsTooSmall(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), PolybiusWithCoords([]byte("12")))
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+		PolybiusWithCoords([]byte("12")),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -38,25 +49,29 @@ func TestPolybiusNewErrorCoordsTooSmall(t *testing.T) {
 }
 
 func TestPolybiusBasicCrypt(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"))
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
 	testCipherCrypt(c, t,
 		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
-		[]byte("44231541452413251242345233213453453235433451154244231531115554143422"),
+		[]byte("15243244513411352512215343332154514214452152321215243241235513312122"),
 		[]byte("THEQUICKBROWNFOXUMPSOVERTHELAZYDOG"),
 	)
 }
 
 func TestPolybiusExtraLetterDecrypt(t *testing.T) {
-	c, err := NewPolybius([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"))
+	c, err := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
-	plain := c.Decrypt([]byte("142"))
+	plain := c.Decrypt([]byte("312"))
 
 	if !bytes.Equal(plain, []byte("D")) {
 		t.Fatalf("invalid decryption: %s", plain)
@@ -64,7 +79,10 @@ func TestPolybiusExtraLetterDecrypt(t *testing.T) {
 }
 
 func BenchmarkPolybiusEncrypt(b *testing.B) {
-	c, _ := NewPolybius([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
+	c, _ := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -73,7 +91,10 @@ func BenchmarkPolybiusEncrypt(b *testing.B) {
 }
 
 func BenchmarkPolybiusDecrypt(b *testing.B) {
-	c, _ := NewPolybius([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"))
+	c, _ := NewPolybius(
+		[]byte("CRYPTOGRAPHY"),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

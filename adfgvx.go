@@ -8,7 +8,7 @@ type Adfgvx struct {
 }
 
 type AdfgvxConfig struct {
-	newPolybius      func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)
+	newPolybius      func(key []byte, opts ...PolybiusOption) (*Polybius, error)
 	newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)
 }
 
@@ -29,7 +29,7 @@ func NewAdfgvx(alphabet, key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 		return nil, fmt.Errorf("expecting alphabet size to be 36, found: %d", alphabetSize)
 	}
 
-	polybius, err := cfg.newPolybius(alphabet, PolybiusWithCoords([]byte("ADFGVX")))
+	polybius, err := cfg.newPolybius([]byte{}, PolybiusWithAlphabet(alphabet), PolybiusWithCoords([]byte("ADFGVX")))
 	if err != nil {
 		return nil, fmt.Errorf("polybius: %s", err.Error())
 	}
@@ -47,7 +47,7 @@ func NewAdfgvx(alphabet, key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 	return &c, nil
 }
 
-func AdfgvxWithNewPolybius(newPolybius func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)) AdfgvxOption {
+func AdfgvxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (*Polybius, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newPolybius = newPolybius
 	}

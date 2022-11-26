@@ -12,13 +12,25 @@ type Polybius struct {
 }
 
 type PolybiusConfig struct {
-	coords []byte
+	alphabet []byte
+	coords   []byte
 }
 
 type PolybiusOption func(*PolybiusConfig)
 
-func NewPolybius(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
-	alphabetSize := len(alphabet)
+func NewPolybius(key []byte, opts ...PolybiusOption) (*Polybius, error) {
+	cfg := &PolybiusConfig{
+		alphabet: []byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+		coords:   []byte("123456789"),
+	}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
+	cfg.alphabet = GetKeyedAlphabet(key, cfg.alphabet)
+
+	alphabetSize := len(cfg.alphabet)
 	size := int(math.Sqrt(float64(alphabetSize)))
 
 	if size*size != alphabetSize {
@@ -30,19 +42,11 @@ func NewPolybius(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
 		decrypt: make(map[[2]byte]byte, alphabetSize),
 	}
 
-	cfg := &PolybiusConfig{
-		coords: []byte("123456"),
-	}
-
-	for _, opt := range opts {
-		opt(cfg)
-	}
-
 	if size > len(cfg.coords) {
 		return nil, fmt.Errorf("expecting coords size to be at least %d, found: %d", size, len(cfg.coords))
 	}
 
-	for i, plain := range alphabet {
+	for i, plain := range cfg.alphabet {
 		x, y := i/size, i%size
 
 		cipher := [2]byte{cfg.coords[x], cfg.coords[y]}
@@ -52,6 +56,12 @@ func NewPolybius(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
 	}
 
 	return &c, nil
+}
+
+func PolybiusWithAlphabet(alphabet []byte) PolybiusOption {
+	return func(cfg *PolybiusConfig) {
+		cfg.alphabet = alphabet
+	}
 }
 
 func PolybiusWithCoords(coords []byte) PolybiusOption {

@@ -5,49 +5,21 @@ import (
 )
 
 func TestSubstitutionNew(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABCD"), []byte("WXYZ"))
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate`)
-	}
-}
-
-func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABCD"), []byte("WXY"))
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABC"), []byte("WXYZ"))
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABBD"), []byte("WXYZ"))
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestSubstitutionNewErrorCipherDuplicate(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABCD"), []byte("WXYX"))
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
+		t.Fatalf(`could not instantiate: "%s"`, err.Error())
 	}
 }
 
 func TestSubstitutionBasicCrypt(t *testing.T) {
-	c, err := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: "%s"`, err.Error())
 	}
 
 	testCipherCrypt(c, t,
@@ -57,8 +29,78 @@ func TestSubstitutionBasicCrypt(t *testing.T) {
 	)
 }
 
+func TestSubstitutionNewWithPlainAlphabet(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABCD")),
+	)
+
+	if c == nil || err != nil {
+		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+	}
+}
+
+func TestSubstitutionNewWithCipherAlphabet(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithCipherAlphabet([]byte("ZYXWVUTSRQPONMLKJIHGFEDCBA")),
+	)
+
+	if c == nil || err != nil {
+		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+	}
+}
+
+func TestSubstitutionNewWithAlphabets(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABCD")),
+		SubstitutionWithCipherAlphabet([]byte("WXYZ")),
+	)
+
+	if c == nil || err != nil {
+		t.Fatalf(`could not instantiate: "%s"`, err.Error())
+	}
+}
+
+func TestSubstitutionNewErrorPlainBigger(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABCD")),
+		SubstitutionWithCipherAlphabet([]byte("WXY")),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestSubstitutionNewErrorCipherBigger(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABC")),
+		SubstitutionWithCipherAlphabet([]byte("WXYZ")),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABBD")),
+		SubstitutionWithCipherAlphabet([]byte("WXYZ")),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
 func BenchmarkSubstitutionEncrypt(b *testing.B) {
-	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
+	c, _ := NewSubstitution([]byte("CRYPTOGRAPHY"))
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -67,7 +109,7 @@ func BenchmarkSubstitutionEncrypt(b *testing.B) {
 }
 
 func BenchmarkSubstitutionDecrypt(b *testing.B) {
-	c, _ := NewSubstitution([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGAHBDEFIJKLMNQSUVWXZ"))
+	c, _ := NewSubstitution([]byte("CRYPTOGRAPHY"))
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

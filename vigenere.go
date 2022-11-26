@@ -8,7 +8,7 @@ type Vigenere struct {
 }
 
 type VigenereConfig struct {
-	newSubstitution func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error)
+	newSubstitution func(plainAlphabet, cipherAlphabet []byte, opts ...SubstitutionOption) (*Substitution, error)
 }
 
 type VigenereOption func(*VigenereConfig)
@@ -47,7 +47,7 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	return &c, nil
 }
 
-func VigenereWithNewSubstitution(newSubstitution func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error)) VigenereOption {
+func VigenereWithNewSubstitution(newSubstitution func(plainAlphabet, cipherAlphabet []byte, opts ...SubstitutionOption) (*Substitution, error)) VigenereOption {
 	return func(cfg *VigenereConfig) {
 		cfg.newSubstitution = newSubstitution
 	}

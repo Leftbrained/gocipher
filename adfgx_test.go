@@ -45,7 +45,7 @@ func TestAdfgxNewErrorInvalidTranspositionCipher(t *testing.T) {
 	c, err := NewAdfgx(
 		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
 		[]byte("ABYZ"),
-		AdfgxWithNewTransposition(func(key []byte) (*Transposition, error) {
+		AdfgxWithNewTransposition(func(key []byte, opts ...TranspositionOption) (*Transposition, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)

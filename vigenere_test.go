@@ -38,7 +38,7 @@ func TestVigenereNewErrorUpperBound(t *testing.T) {
 }
 
 func TestVigenereNewErrorInvalidSubstitutionCipher(t *testing.T) {
-	c, err := NewVigenere([]byte("ABYZ"), VigenereWithNewSubstitution(func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error) {
+	c, err := NewVigenere([]byte("ABYZ"), VigenereWithNewSubstitution(func(plainAlphabet, cipherAlphabet []byte, opts ...SubstitutionOption) (*Substitution, error) {
 		return nil, fmt.Errorf("random failure")
 	}))
 

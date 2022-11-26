@@ -9,7 +9,7 @@ type Adfgvx struct {
 
 type AdfgvxConfig struct {
 	newPolybius      func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)
-	newTransposition func(key []byte) (*Transposition, error)
+	newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)
 }
 
 type AdfgvxOption func(*AdfgvxConfig)
@@ -53,7 +53,7 @@ func AdfgvxWithNewPolybius(newPolybius func(alphabet []byte, opts ...PolybiusOpt
 	}
 }
 
-func AdfgvxWithNewTransposition(newTransposition func(key []byte) (*Transposition, error)) AdfgvxOption {
+func AdfgvxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newTransposition = newTransposition
 	}

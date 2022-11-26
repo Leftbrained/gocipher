@@ -15,7 +15,16 @@ type transpositionColumn struct {
 	original int
 }
 
-func NewTransposition(key []byte) (*Transposition, error) {
+type TranspositionConfig struct{}
+
+type TranspositionOption func(*TranspositionConfig)
+
+func NewTransposition(key []byte, opts ...TranspositionOption) (*Transposition, error) {
+	cfg := &TranspositionConfig{}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
 
 	size := len(key)
 	c := Transposition{

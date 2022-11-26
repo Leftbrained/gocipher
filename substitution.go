@@ -9,7 +9,16 @@ type Substitution struct {
 	decrypt map[byte]byte
 }
 
-func NewSubstitution(plainAlphabet, cipherAlphabet []byte) (*Substitution, error) {
+type SubstitutionConfig struct{}
+
+type SubstitutionOption func(*SubstitutionConfig)
+
+func NewSubstitution(plainAlphabet, cipherAlphabet []byte, opts ...SubstitutionOption) (*Substitution, error) {
+	cfg := &SubstitutionConfig{}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
 
 	size := len(plainAlphabet)
 

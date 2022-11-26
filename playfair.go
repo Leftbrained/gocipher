@@ -16,7 +16,17 @@ type PlayfairCell struct {
 	y      int
 }
 
-func NewPlayfair(key []byte) (*Playfair, error) {
+type PlayfairConfig struct{}
+
+type PlayfairOption func(*PlayfairConfig)
+
+func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
+	cfg := &PlayfairConfig{}
+
+	for _, opt := range opts {
+		opt(cfg)
+	}
+
 	c := Playfair{
 		grid:    make([][]PlayfairCell, 5),
 		letters: make(map[byte]PlayfairCell, 25),

@@ -1,6 +1,7 @@
 package gocipher
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -30,6 +31,16 @@ func TestVigenereNewErrorLowerBound(t *testing.T) {
 
 func TestVigenereNewErrorUpperBound(t *testing.T) {
 	c, err := NewVigenere([]byte("A[YZ"))
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
+func TestVigenereNewErrorInvalidSubstitutionCipher(t *testing.T) {
+	c, err := NewVigenere([]byte("ABYZ"), VigenereWithNewSubstitution(func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error) {
+		return nil, fmt.Errorf("random failure")
+	}))
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")

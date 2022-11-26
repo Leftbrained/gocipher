@@ -7,13 +7,27 @@ type Vigenere struct {
 	ciphers []Cipher
 }
 
+type VigenereConfig struct {
+	newSubstitution func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error)
+}
+
+type VigenereOption func(*VigenereConfig)
+
 var vignereAlphabet = []byte("ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
-func NewVigenere(key []byte) (*Vigenere, error) {
+func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	size := len(key)
 	c := Vigenere{
 		keyLen:  size,
 		ciphers: make([]Cipher, size),
+	}
+
+	cfg := &VigenereConfig{
+		newSubstitution: NewSubstitution,
+	}
+
+	for _, opt := range opts {
+		opt(cfg)
 	}
 
 	for i, k := range key {
@@ -23,7 +37,7 @@ func NewVigenere(key []byte) (*Vigenere, error) {
 
 		k -= 65
 
-		cipher, err := NewSubstitution(vignereAlphabet[0:26], vignereAlphabet[k:k+26])
+		cipher, err := cfg.newSubstitution(vignereAlphabet[0:26], vignereAlphabet[k:k+26])
 		if err != nil {
 			return nil, err
 		}
@@ -31,6 +45,12 @@ func NewVigenere(key []byte) (*Vigenere, error) {
 	}
 
 	return &c, nil
+}
+
+func VigenereWithNewSubstitution(newSubstitution func(plainAlphabet, cipherAlphabet []byte) (*Substitution, error)) VigenereOption {
+	return func(cfg *VigenereConfig) {
+		cfg.newSubstitution = newSubstitution
+	}
 }
 
 func (c *Vigenere) Encrypt(text []byte) []byte {

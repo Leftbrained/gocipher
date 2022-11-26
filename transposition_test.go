@@ -13,21 +13,16 @@ func TestTranspositionNew(t *testing.T) {
 }
 
 func TestTranspositionBasicCrypt(t *testing.T) {
-	c, err := NewTransposition([]byte("ASSAYER"))
+	c, err := NewTransposition([]byte("CRYPTOGRAPHY"))
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
 
 	testCipherCrypt(c, t,
-		[]byte("THEMENSOUTHTURTLESLOCKEDTHROWACROSSTHE"),
-		[]byte("TOTKWTMHSTRNUORSSRCOSHULEAHETEDCEETLHO"),
-		[]byte("THEMENSOUTHTURTLESLOCKEDTHROWACROSSTHE"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("BSDTNRCMZOVGIUAQXEROOHFTKPYUJLEOHWE"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
 	)
-	// testCipherCrypt(c, t,
-	// 	[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
-	// 	[]byte("QOZXENCRTMROUVYJLFKTHPOGIEDUAOBHESW"),
-	// 	[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
-	// )
 }
 
 func BenchmarkTranspositionEncrypt(b *testing.B) {

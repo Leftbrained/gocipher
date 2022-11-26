@@ -10,15 +10,9 @@ type Transposition struct {
 	sorted   []int
 }
 
-type transpositionKeyColumn struct {
+type transpositionColumn struct {
 	letter   byte
 	original int
-}
-
-type transpositionMessageColumn struct {
-	size    int
-	encrypt int
-	decrypt int
 }
 
 func NewTransposition(key []byte) (*Transposition, error) {
@@ -30,10 +24,10 @@ func NewTransposition(key []byte) (*Transposition, error) {
 		sorted:   make([]int, size),
 	}
 
-	cols := make([]transpositionKeyColumn, c.keyLen)
+	cols := make([]transpositionColumn, c.keyLen)
 
 	for i, k := range key {
-		cols[i] = transpositionKeyColumn{
+		cols[i] = transpositionColumn{
 			letter:   k,
 			original: i,
 		}

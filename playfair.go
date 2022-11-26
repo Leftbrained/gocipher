@@ -3,9 +3,11 @@ package gocipher
 import (
 	"bytes"
 	"fmt"
+	"math"
 )
 
 type Playfair struct {
+	size    int
 	grid    [][]PlayfairCell
 	letters map[byte]PlayfairCell
 }
@@ -16,60 +18,60 @@ type PlayfairCell struct {
 	y      int
 }
 
-type PlayfairConfig struct{}
+type PlayfairConfig struct {
+	alphabet []byte
+}
 
 type PlayfairOption func(*PlayfairConfig)
 
 func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
-	cfg := &PlayfairConfig{}
+	cfg := &PlayfairConfig{
+		alphabet: []byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+	}
 
 	for _, opt := range opts {
 		opt(cfg)
 	}
 
-	c := Playfair{
-		grid:    make([][]PlayfairCell, 5),
-		letters: make(map[byte]PlayfairCell, 25),
-	}
-
-	for y := 0; y < 5; y++ {
-		c.grid[y] = make([]PlayfairCell, 5)
-	}
-
-	var i int
-
-	for _, k := range key {
+	for i, k := range key {
 		if k < 65 || k > 90 {
 			return nil, fmt.Errorf("invalid character in key: %s", string(k))
 		}
 		if k == 74 {
-			k = 73
+			key[i] = 73
 		}
-
-		if _, ok := c.letters[k]; ok {
-			continue
-		}
-
-		cell := PlayfairCell{
-			letter: k,
-			x:      i % 5,
-			y:      i / 5,
-		}
-
-		c.grid[cell.y][cell.x] = cell
-		c.letters[cell.letter] = cell
-		i++
 	}
 
-	for _, k := range []byte("ABCDEFGHIKLMNOPQRSTUVWXYZ") {
+	cfg.alphabet = GetKeyedAlphabet(key, cfg.alphabet)
+
+	alphabetSize := len(cfg.alphabet)
+	size := int(math.Sqrt(float64(alphabetSize)))
+
+	if size*size != alphabetSize {
+		return nil, fmt.Errorf("expecting alphabet size to be a perfect square, found: %d", alphabetSize)
+	}
+
+	c := Playfair{
+		size:    size,
+		grid:    make([][]PlayfairCell, size),
+		letters: make(map[byte]PlayfairCell, alphabetSize),
+	}
+
+	for y := 0; y < c.size; y++ {
+		c.grid[y] = make([]PlayfairCell, c.size)
+	}
+
+	var i int
+
+	for _, k := range cfg.alphabet {
 		if _, ok := c.letters[k]; ok {
 			continue
 		}
 
 		cell := PlayfairCell{
 			letter: k,
-			x:      i % 5,
-			y:      i / 5,
+			x:      i % c.size,
+			y:      i / c.size,
 		}
 
 		c.grid[cell.y][cell.x] = cell
@@ -109,9 +111,9 @@ func (c *Playfair) crypt(text []byte, shift int) []byte {
 		x1, y1, x2, y2 := cell1.x, cell1.y, cell2.x, cell2.y
 		switch {
 		case x1 == x2:
-			y1, y2 = (y1+shift)%5, (y2+shift)%5
+			y1, y2 = (y1+shift)%c.size, (y2+shift)%c.size
 		case y1 == y2:
-			x1, x2 = (x1+shift)%5, (x2+shift)%5
+			x1, x2 = (x1+shift)%c.size, (x2+shift)%c.size
 		default:
 			x2, x1 = x1, x2
 		}

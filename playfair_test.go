@@ -5,7 +5,9 @@ import (
 )
 
 func TestPlayfairNew(t *testing.T) {
-	c, err := NewPlayfair([]byte("ABYZ"))
+	c, err := NewPlayfair(
+		[]byte("ABYZ"),
+	)
 
 	if c == nil || err != nil {
 		t.Fatalf(`could not instantiate`)
@@ -13,7 +15,9 @@ func TestPlayfairNew(t *testing.T) {
 }
 
 func TestPlayfairNewErrorLowercase(t *testing.T) {
-	c, err := NewPlayfair([]byte("AbYZ"))
+	c, err := NewPlayfair(
+		[]byte("AbYZ"),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -21,7 +25,9 @@ func TestPlayfairNewErrorLowercase(t *testing.T) {
 }
 
 func TestPlayfairNewErrorLowerBound(t *testing.T) {
-	c, err := NewPlayfair([]byte("A@YZ"))
+	c, err := NewPlayfair(
+		[]byte("A@YZ"),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -29,7 +35,9 @@ func TestPlayfairNewErrorLowerBound(t *testing.T) {
 }
 
 func TestPlayfairNewErrorUpperBound(t *testing.T) {
-	c, err := NewPlayfair([]byte("A[YZ"))
+	c, err := NewPlayfair(
+		[]byte("A[YZ"),
+	)
 
 	if c != nil || err == nil {
 		t.Fatalf("did not fail")
@@ -37,7 +45,9 @@ func TestPlayfairNewErrorUpperBound(t *testing.T) {
 }
 
 func TestPlayfairBasicCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -50,7 +60,9 @@ func TestPlayfairBasicCrypt(t *testing.T) {
 }
 
 func TestPlayfairKeyWithJCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOJRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOJRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -63,7 +75,9 @@ func TestPlayfairKeyWithJCrypt(t *testing.T) {
 }
 
 func TestPlayfairDoubleLetterCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -76,7 +90,9 @@ func TestPlayfairDoubleLetterCrypt(t *testing.T) {
 }
 
 func TestPlayfairDoubleXCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -89,7 +105,9 @@ func TestPlayfairDoubleXCrypt(t *testing.T) {
 }
 
 func TestPlayfairExtraLetterCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -102,7 +120,9 @@ func TestPlayfairExtraLetterCrypt(t *testing.T) {
 }
 
 func TestPlayfairTrailingSkippedLettersCrypt(t *testing.T) {
-	c, err := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, err := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -115,7 +135,9 @@ func TestPlayfairTrailingSkippedLettersCrypt(t *testing.T) {
 }
 
 func BenchmarkPlayfairEncrypt(b *testing.B) {
-	c, _ := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, _ := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -124,7 +146,9 @@ func BenchmarkPlayfairEncrypt(b *testing.B) {
 }
 
 func BenchmarkPlayfairDecrypt(b *testing.B) {
-	c, _ := NewPlayfair([]byte("CRYPTOGRAPHY"))
+	c, _ := NewPlayfair(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

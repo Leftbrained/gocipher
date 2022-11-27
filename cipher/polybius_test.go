@@ -18,7 +18,7 @@ func TestPolybiusNew(t *testing.T) {
 func TestPolybiusNewSix(t *testing.T) {
 	c, err := NewPolybius(
 		[]byte("CRYPTOGRAPHY"),
-		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), map[byte]byte{}),
 	)
 
 	if c == nil || err != nil {
@@ -29,7 +29,9 @@ func TestPolybiusNewSix(t *testing.T) {
 func TestPolybiusNewErrorNotSquare(t *testing.T) {
 	c, err := NewPolybius(
 		[]byte("CRYPTOGRAPHY"),
-		PolybiusWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY")),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY"), map[byte]byte{
+			'J': 'I',
+		}),
 	)
 
 	if c != nil || err == nil {
@@ -81,7 +83,7 @@ func TestPolybiusExtraLetterDecrypt(t *testing.T) {
 func BenchmarkPolybiusEncrypt(b *testing.B) {
 	c, _ := NewPolybius(
 		[]byte("CRYPTOGRAPHY"),
-		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), map[byte]byte{}),
 	)
 
 	b.ResetTimer()
@@ -93,7 +95,7 @@ func BenchmarkPolybiusEncrypt(b *testing.B) {
 func BenchmarkPolybiusDecrypt(b *testing.B) {
 	c, _ := NewPolybius(
 		[]byte("CRYPTOGRAPHY"),
-		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), map[byte]byte{}),
 	)
 
 	b.ResetTimer()

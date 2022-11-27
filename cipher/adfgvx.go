@@ -34,7 +34,9 @@ func NewAdfgvx(key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 
 	polybius, err := cfg.newPolybius(
 		[]byte{},
-		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), map[byte]byte{
+			'J': 'I',
+		}),
 		PolybiusWithCoords([]byte("ADFGVX")),
 	)
 	if err != nil {

@@ -9,10 +9,12 @@ import (
 type Polybius struct {
 	encrypt map[byte][2]byte
 	decrypt map[[2]byte]byte
+	replace map[byte]byte
 }
 
 type PolybiusConfig struct {
 	alphabet []byte
+	replace  map[byte]byte
 	coords   []byte
 }
 
@@ -21,7 +23,10 @@ type PolybiusOption func(*PolybiusConfig)
 func NewPolybius(key []byte, opts ...PolybiusOption) (*Polybius, error) {
 	cfg := &PolybiusConfig{
 		alphabet: []byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
-		coords:   []byte("123456789"),
+		replace: map[byte]byte{
+			'J': 'I',
+		},
+		coords: []byte("123456789"),
 	}
 
 	for _, opt := range opts {
@@ -58,9 +63,10 @@ func NewPolybius(key []byte, opts ...PolybiusOption) (*Polybius, error) {
 	return &c, nil
 }
 
-func PolybiusWithAlphabet(alphabet []byte) PolybiusOption {
+func PolybiusWithAlphabet(alphabet []byte, replace map[byte]byte) PolybiusOption {
 	return func(cfg *PolybiusConfig) {
 		cfg.alphabet = alphabet
+		cfg.replace = replace
 	}
 }
 

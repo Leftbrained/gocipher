@@ -21,7 +21,9 @@ func TestAdfgvxNewErrorAlphabetSize(t *testing.T) {
 	c, err := NewAdfgvx(
 		[]byte("ABYZ"),
 		AdfgvxWithNewPolybius(func(key []byte, opts ...PolybiusOption) (gocipher.Cipher, error) {
-			opts = append(opts, PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345678")))
+			opts = append(opts, PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345678"), map[byte]byte{
+				'J': 'I',
+			}))
 			return NewPolybius(key, opts...)
 		}),
 	)

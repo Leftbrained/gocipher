@@ -1,7 +1,6 @@
 package gocipher
 
 import (
-	"bytes"
 	"fmt"
 	"math"
 )
@@ -83,7 +82,7 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 }
 
 func (c *Playfair) crypt(text []byte, shift int) []byte {
-	buffer := bytes.NewBuffer(make([]byte, 0, len(text)))
+	output := make([]byte, 0, len(text))
 
 	for i := 0; i < len(text); {
 		var cell1 *PlayfairCell
@@ -118,13 +117,10 @@ func (c *Playfair) crypt(text []byte, shift int) []byte {
 			x2, x1 = x1, x2
 		}
 
-		buffer.Write([]byte{
-			c.grid[y1][x1].letter,
-			c.grid[y2][x2].letter,
-		})
+		output = append(output, c.grid[y1][x1].letter, c.grid[y2][x2].letter)
 	}
 
-	return buffer.Bytes()
+	return output
 }
 
 func (c *Playfair) Encrypt(text []byte) []byte {

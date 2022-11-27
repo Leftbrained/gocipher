@@ -9,6 +9,7 @@ type Playfair struct {
 	size    int
 	grid    [][]PlayfairCell
 	letters map[byte]PlayfairCell
+	replace map[byte]byte
 }
 
 type PlayfairCell struct {
@@ -19,6 +20,7 @@ type PlayfairCell struct {
 
 type PlayfairConfig struct {
 	alphabet []byte
+	replace  map[byte]byte
 }
 
 type PlayfairOption func(*PlayfairConfig)
@@ -26,6 +28,9 @@ type PlayfairOption func(*PlayfairConfig)
 func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 	cfg := &PlayfairConfig{
 		alphabet: []byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
+		replace: map[byte]byte{
+			'J': 'I',
+		},
 	}
 
 	for _, opt := range opts {
@@ -33,11 +38,8 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 	}
 
 	for i, k := range key {
-		if k < 65 || k > 90 {
-			return nil, fmt.Errorf("invalid character in key: %s", string(k))
-		}
-		if k == 74 {
-			key[i] = 73
+		if replacement, ok := cfg.replace[k]; ok {
+			key[i] = replacement
 		}
 	}
 
@@ -54,6 +56,7 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 		size:    size,
 		grid:    make([][]PlayfairCell, size),
 		letters: make(map[byte]PlayfairCell, alphabetSize),
+		replace: cfg.replace,
 	}
 
 	for y := 0; y < c.size; y++ {
@@ -77,9 +80,10 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 	return &c, nil
 }
 
-func PlayfairWithAlphabet(alphabet []byte) PlayfairOption {
+func PlayfairWithAlphabet(alphabet []byte, replace map[byte]byte) PlayfairOption {
 	return func(cfg *PlayfairConfig) {
 		cfg.alphabet = alphabet
+		cfg.replace = replace
 	}
 }
 
@@ -135,9 +139,8 @@ func (c *Playfair) Decrypt(text []byte) []byte {
 
 func (c *Playfair) getUnigram(text []byte, i int) (*PlayfairCell, int) {
 	for _, from := range text {
-		if from == 74 {
-			// Converting J to I
-			from = 73
+		if replacement, ok := c.replace[from]; ok {
+			from = replacement
 		}
 		i++
 		if cell, ok := c.letters[from]; ok {

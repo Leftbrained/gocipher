@@ -6,48 +6,18 @@ import (
 
 func TestPlayfairNew(t *testing.T) {
 	c, err := NewPlayfair(
-		[]byte("ABYZ"),
+		[]byte("CRYPTOGRAPHY"),
 	)
 
 	if c == nil || err != nil {
-		t.Fatalf(`could not instantiate`)
+		t.Fatalf(`could not instantiate: %q`, err.Error())
 	}
 }
 
 func TestPlayfairNewErrorNotSquare(t *testing.T) {
 	c, err := NewPlayfair(
-		[]byte("ABYZ"),
-		PlayfairWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY")),
-	)
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestPlayfairNewErrorLowercase(t *testing.T) {
-	c, err := NewPlayfair(
-		[]byte("AbYZ"),
-	)
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestPlayfairNewErrorLowerBound(t *testing.T) {
-	c, err := NewPlayfair(
-		[]byte("A@YZ"),
-	)
-
-	if c != nil || err == nil {
-		t.Fatalf("did not fail")
-	}
-}
-
-func TestPlayfairNewErrorUpperBound(t *testing.T) {
-	c, err := NewPlayfair(
-		[]byte("A[YZ"),
+		[]byte("CRYPTOGRAPHY"),
+		PlayfairWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY"), map[byte]byte{}),
 	)
 
 	if c != nil || err == nil {
@@ -60,7 +30,7 @@ func TestPlayfairBasicCrypt(t *testing.T) {
 		[]byte("CRYPTOGRAPHY"),
 	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
 	testCipherCrypt(c, t,
@@ -75,7 +45,7 @@ func TestPlayfairKeyWithJCrypt(t *testing.T) {
 		[]byte("CRYPTOJRAPHY"),
 	)
 	if err != nil {
-		t.Fatalf("unexpected: could not instantiate")
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
 	}
 
 	testCipherCrypt(c, t,

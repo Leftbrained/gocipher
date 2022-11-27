@@ -40,6 +40,17 @@ func TestSubstitutionNewWithPlainAlphabet(t *testing.T) {
 	}
 }
 
+func TestSubstitutionNewWithNonUniquePlainAlphabet(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+		SubstitutionWithPlainAlphabet([]byte("ABCDB")),
+	)
+
+	if c == nil || err != nil {
+		t.Fatalf(`could not instantiate: %q`, err.Error())
+	}
+}
+
 func TestSubstitutionNewWithCipherAlphabet(t *testing.T) {
 	c, err := NewSubstitution(
 		[]byte("CRYPTOGRAPHY"),

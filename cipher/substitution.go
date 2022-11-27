@@ -25,6 +25,8 @@ func NewSubstitution(key []byte, opts ...SubstitutionOption) (*Substitution, err
 		opt(cfg)
 	}
 
+	cfg.plainAlphabet = GetKeyedAlphabet([]byte{}, cfg.plainAlphabet)
+
 	if len(cfg.cipherAlphabet) == 0 {
 		cfg.cipherAlphabet = cfg.plainAlphabet
 	}

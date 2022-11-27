@@ -45,6 +45,7 @@ func NewPolybius(key []byte, opts ...PolybiusOption) (*Polybius, error) {
 	c := Polybius{
 		encrypt: make(map[byte][2]byte, alphabetSize),
 		decrypt: make(map[[2]byte]byte, alphabetSize),
+		replace: cfg.replace,
 	}
 
 	if size > len(cfg.coords) {
@@ -80,6 +81,10 @@ func (c *Polybius) Encrypt(text []byte) []byte {
 	buffer := bytes.NewBuffer(make([]byte, 0, len(text)*2))
 
 	for _, from := range text {
+		if replacement, ok := c.replace[from]; ok {
+			from = replacement
+		}
+
 		if to, ok := c.encrypt[from]; ok {
 			buffer.Write(to[:])
 		}

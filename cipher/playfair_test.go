@@ -14,6 +14,17 @@ func TestPlayfairNew(t *testing.T) {
 	}
 }
 
+func TestPlayfairNewErrorNotSquare(t *testing.T) {
+	c, err := NewPlayfair(
+		[]byte("ABYZ"),
+		PlayfairWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY")),
+	)
+
+	if c != nil || err == nil {
+		t.Fatalf("did not fail")
+	}
+}
+
 func TestPlayfairNewErrorLowercase(t *testing.T) {
 	c, err := NewPlayfair(
 		[]byte("AbYZ"),

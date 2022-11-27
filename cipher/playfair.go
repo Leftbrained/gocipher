@@ -63,10 +63,6 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 	var i int
 
 	for _, k := range cfg.alphabet {
-		if _, ok := c.letters[k]; ok {
-			continue
-		}
-
 		cell := PlayfairCell{
 			letter: k,
 			x:      i % c.size,
@@ -79,6 +75,12 @@ func NewPlayfair(key []byte, opts ...PlayfairOption) (*Playfair, error) {
 	}
 
 	return &c, nil
+}
+
+func PlayfairWithAlphabet(alphabet []byte) PlayfairOption {
+	return func(cfg *PlayfairConfig) {
+		cfg.alphabet = alphabet
+	}
 }
 
 func (c *Playfair) crypt(text []byte, shift int) []byte {

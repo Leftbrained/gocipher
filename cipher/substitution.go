@@ -46,10 +46,6 @@ func NewSubstitution(key []byte, opts ...SubstitutionOption) (*Substitution, err
 	for i, plain := range cfg.plainAlphabet {
 		cipher := cfg.cipherAlphabet[i]
 
-		if _, ok := c.encrypt[plain]; ok {
-			return nil, fmt.Errorf("plain alphabet has duplicates")
-		}
-
 		c.encrypt[plain] = cipher
 		c.decrypt[cipher] = plain
 	}

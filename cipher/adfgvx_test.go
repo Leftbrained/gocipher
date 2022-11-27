@@ -1,8 +1,10 @@
-package gocipher
+package cipher
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/leftbrained/gocipher"
 )
 
 func TestAdfgvxNew(t *testing.T) {
@@ -18,7 +20,7 @@ func TestAdfgvxNew(t *testing.T) {
 func TestAdfgvxNewErrorAlphabetSize(t *testing.T) {
 	c, err := NewAdfgvx(
 		[]byte("ABYZ"),
-		AdfgvxWithNewPolybius(func(key []byte, opts ...PolybiusOption) (Cipher, error) {
+		AdfgvxWithNewPolybius(func(key []byte, opts ...PolybiusOption) (gocipher.Cipher, error) {
 			opts = append(opts, PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ012345678")))
 			return NewPolybius(key, opts...)
 		}),
@@ -32,7 +34,7 @@ func TestAdfgvxNewErrorAlphabetSize(t *testing.T) {
 func TestAdfgvxNewErrorInvalidPolybiusCipher(t *testing.T) {
 	c, err := NewAdfgvx(
 		[]byte("ABYZ"),
-		AdfgvxWithNewPolybius(func(alphabet []byte, opts ...PolybiusOption) (Cipher, error) {
+		AdfgvxWithNewPolybius(func(alphabet []byte, opts ...PolybiusOption) (gocipher.Cipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)
@@ -45,7 +47,7 @@ func TestAdfgvxNewErrorInvalidPolybiusCipher(t *testing.T) {
 func TestAdfgvxNewErrorInvalidTranspositionCipher(t *testing.T) {
 	c, err := NewAdfgvx(
 		[]byte("ABYZ"),
-		AdfgvxWithNewTransposition(func(key []byte, opts ...TranspositionOption) (Cipher, error) {
+		AdfgvxWithNewTransposition(func(key []byte, opts ...TranspositionOption) (gocipher.Cipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)

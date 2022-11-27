@@ -1,8 +1,10 @@
-package gocipher
+package cipher
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/leftbrained/gocipher"
 )
 
 func TestVigenereNew(t *testing.T) {
@@ -48,7 +50,7 @@ func TestVigenereNewErrorUpperBound(t *testing.T) {
 func TestVigenereNewErrorInvalidSubstitutionCipher(t *testing.T) {
 	c, err := NewVigenere(
 		[]byte("ABYZ"),
-		VigenereWithNewSubstitution(func([]byte, ...SubstitutionOption) (Cipher, error) {
+		VigenereWithNewSubstitution(func([]byte, ...SubstitutionOption) (gocipher.Cipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)

@@ -1,25 +1,29 @@
-package gocipher
+package cipher
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/leftbrained/gocipher"
+)
 
 type Adfgvx struct {
-	polybius      Cipher
-	transposition Cipher
+	polybius      gocipher.Cipher
+	transposition gocipher.Cipher
 }
 
 type AdfgvxConfig struct {
-	newPolybius      func(key []byte, opts ...PolybiusOption) (Cipher, error)
-	newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)
+	newPolybius      func(key []byte, opts ...PolybiusOption) (gocipher.Cipher, error)
+	newTransposition func(key []byte, opts ...TranspositionOption) (gocipher.Cipher, error)
 }
 
 type AdfgvxOption func(*AdfgvxConfig)
 
 func NewAdfgvx(key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 	cfg := &AdfgvxConfig{
-		newPolybius: func(key []byte, opts ...PolybiusOption) (Cipher, error) {
+		newPolybius: func(key []byte, opts ...PolybiusOption) (gocipher.Cipher, error) {
 			return NewPolybius(key, opts...)
 		},
-		newTransposition: func(key []byte, opts ...TranspositionOption) (Cipher, error) {
+		newTransposition: func(key []byte, opts ...TranspositionOption) (gocipher.Cipher, error) {
 			return NewTransposition(key, opts...)
 		},
 	}
@@ -50,13 +54,13 @@ func NewAdfgvx(key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 	return &c, nil
 }
 
-func AdfgvxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (Cipher, error)) AdfgvxOption {
+func AdfgvxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (gocipher.Cipher, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newPolybius = newPolybius
 	}
 }
 
-func AdfgvxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)) AdfgvxOption {
+func AdfgvxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (gocipher.Cipher, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newTransposition = newTransposition
 	}

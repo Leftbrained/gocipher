@@ -1,4 +1,4 @@
-package gocipher
+package cipher
 
 import (
 	"bytes"

@@ -1,11 +1,13 @@
-package gocipher
+package cipher
 
 import (
 	"bytes"
 	"testing"
+
+	"github.com/leftbrained/gocipher"
 )
 
-func testCipherCrypt(c Cipher, t *testing.T, inputPlain, expectedCipher, expectedPlain []byte) {
+func testCipherCrypt(c gocipher.Cipher, t *testing.T, inputPlain, expectedCipher, expectedPlain []byte) {
 
 	cipher := c.Encrypt(inputPlain)
 

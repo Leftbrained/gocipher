@@ -1,14 +1,18 @@
-package gocipher
+package cipher
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/leftbrained/gocipher"
+)
 
 type Vigenere struct {
 	keyLen  int
-	ciphers []Cipher
+	ciphers []gocipher.Cipher
 }
 
 type VigenereConfig struct {
-	newSubstitution func(key []byte, opts ...SubstitutionOption) (Cipher, error)
+	newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error)
 }
 
 type VigenereOption func(*VigenereConfig)
@@ -19,11 +23,11 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	size := len(key)
 	c := Vigenere{
 		keyLen:  size,
-		ciphers: make([]Cipher, size),
+		ciphers: make([]gocipher.Cipher, size),
 	}
 
 	cfg := &VigenereConfig{
-		newSubstitution: func(key []byte, opts ...SubstitutionOption) (Cipher, error) {
+		newSubstitution: func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error) {
 			return NewSubstitution(key, opts...)
 		},
 	}
@@ -53,7 +57,7 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	return &c, nil
 }
 
-func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (Cipher, error)) VigenereOption {
+func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error)) VigenereOption {
 	return func(cfg *VigenereConfig) {
 		cfg.newSubstitution = newSubstitution
 	}

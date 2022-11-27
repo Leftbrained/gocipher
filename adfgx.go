@@ -28,7 +28,10 @@ func NewAdfgx(key []byte, opts ...AdfgxOption) (*Adfgx, error) {
 		opt(cfg)
 	}
 
-	polybius, err := cfg.newPolybius([]byte{}, PolybiusWithCoords([]byte("ADFGX")))
+	polybius, err := cfg.newPolybius(
+		[]byte{},
+		PolybiusWithCoords([]byte("ADFGX")),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("polybius: %s", err.Error())
 	}

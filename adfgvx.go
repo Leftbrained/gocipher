@@ -8,28 +8,31 @@ type Adfgvx struct {
 }
 
 type AdfgvxConfig struct {
-	newPolybius      func(key []byte, opts ...PolybiusOption) (*Polybius, error)
-	newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)
+	newPolybius      func(key []byte, opts ...PolybiusOption) (Cipher, error)
+	newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)
 }
 
 type AdfgvxOption func(*AdfgvxConfig)
 
-func NewAdfgvx(alphabet, key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
+func NewAdfgvx(key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 	cfg := &AdfgvxConfig{
-		newPolybius:      NewPolybius,
-		newTransposition: NewTransposition,
+		newPolybius: func(key []byte, opts ...PolybiusOption) (Cipher, error) {
+			return NewPolybius(key, opts...)
+		},
+		newTransposition: func(key []byte, opts ...TranspositionOption) (Cipher, error) {
+			return NewTransposition(key, opts...)
+		},
 	}
 
 	for _, opt := range opts {
 		opt(cfg)
 	}
 
-	alphabetSize := len(alphabet)
-	if alphabetSize != 36 {
-		return nil, fmt.Errorf("expecting alphabet size to be 36, found: %d", alphabetSize)
-	}
-
-	polybius, err := cfg.newPolybius([]byte{}, PolybiusWithAlphabet(alphabet), PolybiusWithCoords([]byte("ADFGVX")))
+	polybius, err := cfg.newPolybius(
+		[]byte{},
+		PolybiusWithAlphabet([]byte("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")),
+		PolybiusWithCoords([]byte("ADFGVX")),
+	)
 	if err != nil {
 		return nil, fmt.Errorf("polybius: %s", err.Error())
 	}
@@ -47,13 +50,13 @@ func NewAdfgvx(alphabet, key []byte, opts ...AdfgvxOption) (*Adfgvx, error) {
 	return &c, nil
 }
 
-func AdfgvxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (*Polybius, error)) AdfgvxOption {
+func AdfgvxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (Cipher, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newPolybius = newPolybius
 	}
 }
 
-func AdfgvxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)) AdfgvxOption {
+func AdfgvxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)) AdfgvxOption {
 	return func(cfg *AdfgvxConfig) {
 		cfg.newTransposition = newTransposition
 	}

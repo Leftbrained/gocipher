@@ -7,7 +7,6 @@ import (
 
 func TestAdfgxNew(t *testing.T) {
 	c, err := NewAdfgx(
-		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
 		[]byte("ABYZ"),
 	)
 
@@ -18,8 +17,11 @@ func TestAdfgxNew(t *testing.T) {
 
 func TestAdfgxNewErrorAlphabetSize(t *testing.T) {
 	c, err := NewAdfgx(
-		[]byte("ABCDEFGHIKLMNOPQRSTUVWXY"),
 		[]byte("ABYZ"),
+		AdfgxWithNewPolybius(func(key []byte, opts ...PolybiusOption) (Cipher, error) {
+			opts = append(opts, PolybiusWithAlphabet([]byte("ABCDEFGHIKLMNOPQRSTUVWXY")))
+			return NewPolybius(key, opts...)
+		}),
 	)
 
 	if c != nil || err == nil {
@@ -29,9 +31,8 @@ func TestAdfgxNewErrorAlphabetSize(t *testing.T) {
 
 func TestAdfgxNewErrorInvalidPolybiusCipher(t *testing.T) {
 	c, err := NewAdfgx(
-		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
 		[]byte("ABYZ"),
-		AdfgxWithNewPolybius(func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error) {
+		AdfgxWithNewPolybius(func(key []byte, opts ...PolybiusOption) (Cipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)
@@ -43,9 +44,8 @@ func TestAdfgxNewErrorInvalidPolybiusCipher(t *testing.T) {
 
 func TestAdfgxNewErrorInvalidTranspositionCipher(t *testing.T) {
 	c, err := NewAdfgx(
-		[]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"),
 		[]byte("ABYZ"),
-		AdfgxWithNewTransposition(func(key []byte, opts ...TranspositionOption) (*Transposition, error) {
+		AdfgxWithNewTransposition(func(key []byte, opts ...TranspositionOption) (Cipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)
@@ -56,7 +56,9 @@ func TestAdfgxNewErrorInvalidTranspositionCipher(t *testing.T) {
 }
 
 func TestAdfgxBasicCrypt(t *testing.T) {
-	c, err := NewAdfgx([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGRAPHY"))
+	c, err := NewAdfgx(
+		[]byte("CRYPTOGRAPHY"),
+	)
 	if err != nil {
 		t.Fatalf("unexpected: could not instantiate")
 	}
@@ -69,7 +71,9 @@ func TestAdfgxBasicCrypt(t *testing.T) {
 }
 
 func BenchmarkAdfgxEncrypt(b *testing.B) {
-	c, _ := NewAdfgx([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGRAPHY"))
+	c, _ := NewAdfgx(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -78,7 +82,9 @@ func BenchmarkAdfgxEncrypt(b *testing.B) {
 }
 
 func BenchmarkAdfgxDecrypt(b *testing.B) {
-	c, _ := NewAdfgx([]byte("ABCDEFGHIKLMNOPQRSTUVWXYZ"), []byte("CRYPTOGRAPHY"))
+	c, _ := NewAdfgx(
+		[]byte("CRYPTOGRAPHY"),
+	)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

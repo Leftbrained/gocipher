@@ -8,28 +8,27 @@ type Adfgx struct {
 }
 
 type AdfgxConfig struct {
-	newPolybius      func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)
-	newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)
+	newPolybius      func(key []byte, opts ...PolybiusOption) (Cipher, error)
+	newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)
 }
 
 type AdfgxOption func(*AdfgxConfig)
 
-func NewAdfgx(alphabet, key []byte, opts ...AdfgxOption) (*Adfgx, error) {
+func NewAdfgx(key []byte, opts ...AdfgxOption) (*Adfgx, error) {
 	cfg := &AdfgxConfig{
-		newPolybius:      NewPolybius,
-		newTransposition: NewTransposition,
+		newPolybius: func(key []byte, opts ...PolybiusOption) (Cipher, error) {
+			return NewPolybius(key, opts...)
+		},
+		newTransposition: func(key []byte, opts ...TranspositionOption) (Cipher, error) {
+			return NewTransposition(key, opts...)
+		},
 	}
 
 	for _, opt := range opts {
 		opt(cfg)
 	}
 
-	alphabetSize := len(alphabet)
-	if alphabetSize != 25 {
-		return nil, fmt.Errorf("expecting alphabet size to be 25, found: %d", alphabetSize)
-	}
-
-	polybius, err := cfg.newPolybius(alphabet, PolybiusWithCoords([]byte("ADFGX")))
+	polybius, err := cfg.newPolybius([]byte{}, PolybiusWithCoords([]byte("ADFGX")))
 	if err != nil {
 		return nil, fmt.Errorf("polybius: %s", err.Error())
 	}
@@ -47,13 +46,13 @@ func NewAdfgx(alphabet, key []byte, opts ...AdfgxOption) (*Adfgx, error) {
 	return &c, nil
 }
 
-func AdfgxWithNewPolybius(newPolybius func(alphabet []byte, opts ...PolybiusOption) (*Polybius, error)) AdfgxOption {
+func AdfgxWithNewPolybius(newPolybius func(key []byte, opts ...PolybiusOption) (Cipher, error)) AdfgxOption {
 	return func(cfg *AdfgxConfig) {
 		cfg.newPolybius = newPolybius
 	}
 }
 
-func AdfgxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (*Transposition, error)) AdfgxOption {
+func AdfgxWithNewTransposition(newTransposition func(key []byte, opts ...TranspositionOption) (Cipher, error)) AdfgxOption {
 	return func(cfg *AdfgxConfig) {
 		cfg.newTransposition = newTransposition
 	}

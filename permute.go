@@ -31,8 +31,11 @@ import "fmt"
 // https://docs.python.org/3/library/itertools.html#itertools.permutations
 // k-permutations of n
 func Permutations(n, k int8, handler func([]int8)) error {
-	if k > n {
-		return fmt.Errorf("k must be between 0 and n: n=%d k=%d", n, k)
+	if n < 0 || n > 126 {
+		return fmt.Errorf("n must be between 0 and 126, inclusively: n=%d k=%d", n, k)
+	}
+	if k < 0 || k > n {
+		return fmt.Errorf("k must be between 0 and n, inclusively: n=%d k=%d", n, k)
 	}
 
 	indices := make([]int8, n)

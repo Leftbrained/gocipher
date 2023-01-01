@@ -1,5 +1,7 @@
 package gocipher
 
+import "fmt"
+
 // type Permute struct{}
 
 // type PermuteConfig struct{}
@@ -27,33 +29,42 @@ package gocipher
 // }
 
 // https://docs.python.org/3/library/itertools.html#itertools.permutations
-func Permutations(size int8, handler func([]int8)) {
-	indices := make([]int8, size) // [0, 1, 2]
-	cycles := make([]int8, size)  // [3, 2, 1]
-
-	for i := int8(0); i < size; i++ {
-		indices[i] = i
-		cycles[i] = size - i
+// k-permutations of n
+func Permutations(n, k int8, handler func([]int8)) error {
+	if k > n {
+		return fmt.Errorf("k must be between 0 and n: n=%d k=%d", n, k)
 	}
 
-	handler(indices)
+	indices := make([]int8, n)
+	cycles := make([]int8, k)
+
+	for i := int8(0); i < n; i++ {
+		indices[i] = i
+		if i < k {
+			cycles[i] = n - i
+		}
+	}
+
+	handler(indices[:k])
 
 	var buffer int8
 OUTER:
 	for {
-		for i := size - 1; i >= 0; i-- {
+		for i := k - 1; i >= 0; i-- {
 			cycles[i] -= 1
 			if cycles[i] == 0 {
 				buffer = indices[i]
-				copy(indices[i:size-1], indices[i+1:]) // I think indices[i:size-1] can be indices[i:]
-				indices[size-1] = buffer
-				cycles[i] = size - i
+				copy(indices[i:n-1], indices[i+1:]) // I think indices[i:size-1] can be indices[i:]
+				indices[n-1] = buffer
+				cycles[i] = n - i
 			} else {
-				indices[i], indices[size-cycles[i]] = indices[size-cycles[i]], indices[i]
-				handler(indices)
+				indices[i], indices[n-cycles[i]] = indices[n-cycles[i]], indices[i]
+				handler(indices[:k])
 				continue OUTER
 			}
 		}
 		break
 	}
+
+	return nil
 }

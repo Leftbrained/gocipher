@@ -87,3 +87,36 @@ func permutationsQuickPermCountdown(n int8, handler func([]int8)) error {
 	}
 	return nil
 }
+
+func permutationsQuickPermCounting(n int8, handler func([]int8)) error {
+	// https://www.quickperm.org/
+
+	var i, j int8
+	indices := make([]int8, n)
+	p := make([]int8, n)
+
+	for i = 0; i < n; i++ {
+		indices[i] = i
+		p[i] = 0
+	}
+
+	handler(indices)
+
+	for i = 1; i < n; {
+		if p[i] < i {
+			if i%2 == 1 {
+				j = p[i]
+			} else {
+				j = 0
+			}
+			indices[i], indices[j] = indices[j], indices[i]
+			handler(indices)
+			p[i]++
+			i = 1
+		} else {
+			p[i] = 0
+			i++
+		}
+	}
+	return nil
+}

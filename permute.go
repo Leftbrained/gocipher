@@ -3,17 +3,22 @@ package gocipher
 import "fmt"
 
 func Permutations(n, k int8, handler func([]int8)) error {
-	return permutationsQuickPerm(n, k, handler)
-}
-
-func permutationsPython(n, k int8, handler func([]int8)) error {
-	// https://docs.python.org/3/library/itertools.html#itertools.permutations
 	if n < 0 || n > 126 {
 		return fmt.Errorf("n must be between 0 and 126, inclusively: n=%d k=%d", n, k)
 	}
 	if k < 0 || k > n {
 		return fmt.Errorf("k must be between 0 and n, inclusively: n=%d k=%d", n, k)
 	}
+
+	if n == k {
+		return permutationsQuickPermCountdown(n, handler)
+	}
+
+	return permutationsPython(n, k, handler)
+}
+
+func permutationsPython(n, k int8, handler func([]int8)) error {
+	// https://docs.python.org/3/library/itertools.html#itertools.permutations
 
 	indices := make([]int8, n)
 	cycles := make([]int8, k)
@@ -49,42 +54,35 @@ OUTER:
 	return nil
 }
 
-func permutationsQuickPerm(length, k int8, handler func([]int8)) error {
-	// https://www.baeldung.com/cs/array-generate-all-permutations
-	if length < 0 || length > 126 {
-		return fmt.Errorf("n must be between 0 and 126, inclusively: length=%d k=%d", length, k)
-	}
-	if k != length {
-		return fmt.Errorf("k must be equal to length: length=%d k=%d", length, k)
-	}
+func permutationsQuickPermCountdown(n int8, handler func([]int8)) error {
+	// https://www.quickperm.org/
 
-	elementsToPermute := make([]int8, length)
-	p := make([]int8, length+1)
+	var i, j int8
+	indices := make([]int8, n)
+	p := make([]int8, n+1)
 
-	for i := int8(0); i < length; i++ {
+	for i = 0; i < n; i++ {
+		indices[i] = i
 		p[i] = i
-		elementsToPermute[i] = i
 	}
-	p[length] = length
+	p[n] = n
 
-	handler(elementsToPermute)
+	handler(indices)
 
-	var j int8
-	for index := int8(1); index < length; {
-		p[index] -= 1
+	for i = 1; i < n; {
+		p[i]--
 
-		if index%2 == 1 {
-			j = p[index]
+		if i%2 == 1 {
+			j = p[i]
 		} else {
 			j = 0
 		}
-		elementsToPermute[index], elementsToPermute[j] = elementsToPermute[j], elementsToPermute[index]
-		handler(elementsToPermute)
 
-		index = 1
-		for p[index] == 0 {
-			p[index] = index
-			index++
+		indices[i], indices[j] = indices[j], indices[i]
+		handler(indices)
+
+		for i = 1; p[i] == 0; i++ {
+			p[i] = i
 		}
 	}
 	return nil

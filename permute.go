@@ -120,3 +120,35 @@ func permutationsQuickPermCounting(n int8, handler func([]int8)) error {
 	}
 	return nil
 }
+
+func permutationsHeaps(n int8, handler func([]int8)) error {
+	// https://www.baeldung.com/cs/array-generate-all-permutations
+
+	var i int8
+	indices := make([]int8, n)
+	c := make([]int8, n)
+
+	for i = 0; i < n; i++ {
+		indices[i] = i
+		c[i] = 0
+	}
+
+	handler(indices)
+
+	for i = 0; i < n; {
+		if c[i] < i {
+			if i%2 == 0 {
+				indices[0], indices[i] = indices[i], indices[0]
+			} else {
+				indices[c[i]], indices[i] = indices[i], indices[c[i]]
+			}
+			handler(indices)
+			c[i]++
+			i = 0
+		} else {
+			c[i] = 0
+			i++
+		}
+	}
+	return nil
+}

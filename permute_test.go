@@ -40,3 +40,9 @@ func TestPermutationsErrorKGreaterThanN(t *testing.T) {
 		t.Fatalf("did not fail")
 	}
 }
+
+func BenchmarkPermutations(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_ = Permutations(10, 10, func(i []int8) {})
+	}
+}

@@ -2,7 +2,24 @@ package gocipher
 
 import "fmt"
 
-func Permutations(n, k int8, handler func([]int8)) error {
+func PermutationsSlice[T any](elements []T, handler func([]T)) error {
+	len := int8(len(elements))
+
+	permutation := make([]T, len)
+	return Permutations(len, func(indices []int8) {
+		for i, j := range indices {
+			permutation[i] = elements[j]
+		}
+
+		handler(permutation)
+	})
+}
+
+func Permutations(n int8, handler func([]int8)) error {
+	return PermutationsPartial(n, n, handler)
+}
+
+func PermutationsPartial(n, k int8, handler func([]int8)) error {
 	if n < 0 || n > 126 {
 		return fmt.Errorf("n must be between 0 and 126, inclusively: n=%d k=%d", n, k)
 	}
@@ -115,6 +132,38 @@ func permutationsQuickPermCounting(n int8, handler func([]int8)) error {
 			i = 1
 		} else {
 			p[i] = 0
+			i++
+		}
+	}
+	return nil
+}
+
+func permutationsHeaps(n int8, handler func([]int8)) error {
+	// https://www.baeldung.com/cs/array-generate-all-permutations
+
+	var i int8
+	indices := make([]int8, n)
+	c := make([]int8, n)
+
+	for i = 0; i < n; i++ {
+		indices[i] = i
+		c[i] = 0
+	}
+
+	handler(indices)
+
+	for i = 0; i < n; {
+		if c[i] < i {
+			if i%2 == 0 {
+				indices[0], indices[i] = indices[i], indices[0]
+			} else {
+				indices[c[i]], indices[i] = indices[i], indices[c[i]]
+			}
+			handler(indices)
+			c[i]++
+			i = 0
+		} else {
+			c[i] = 0
 			i++
 		}
 	}

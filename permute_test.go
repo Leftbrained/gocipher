@@ -31,7 +31,7 @@ func TestPermutationsPartial(t *testing.T) {
 
 func testPermutations(t *testing.T, n, k int8, expected [][]int8) {
 	out := make([][]int8, 0)
-	err := Permutations(n, k, func(set []int8) {
+	err := PermutationsPartial(n, k, func(set []int8) {
 		setCopy := make([]int8, len(set))
 		copy(setCopy, set)
 		out = append(out, setCopy)
@@ -56,7 +56,7 @@ func testPermutations(t *testing.T, n, k int8, expected [][]int8) {
 }
 
 func TestPermutationsErrorKGreaterThanN(t *testing.T) {
-	err := Permutations(3, 4, func(i []int8) {})
+	err := PermutationsPartial(3, 4, func(i []int8) {})
 
 	if err == nil {
 		t.Fatalf("did not fail")
@@ -75,7 +75,7 @@ func BenchmarkPermutations(b *testing.B) {
 	for _, bm := range benchmarks {
 		b.Run(fmt.Sprintf("n=%d/k=%d", bm.n, bm.k), func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_ = Permutations(bm.n, bm.k, func(i []int8) {})
+				_ = PermutationsPartial(bm.n, bm.k, func(i []int8) {})
 			}
 		})
 	}

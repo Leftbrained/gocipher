@@ -2,7 +2,24 @@ package gocipher
 
 import "fmt"
 
-func Permutations(n, k int8, handler func([]int8)) error {
+func PermutationsSlice[T any](elements []T, handler func([]T)) error {
+	len := int8(len(elements))
+
+	permutation := make([]T, len)
+	return Permutations(len, func(indices []int8) {
+		for i, j := range indices {
+			permutation[i] = elements[j]
+		}
+
+		handler(permutation)
+	})
+}
+
+func Permutations(n int8, handler func([]int8)) error {
+	return PermutationsPartial(n, n, handler)
+}
+
+func PermutationsPartial(n, k int8, handler func([]int8)) error {
 	if n < 0 || n > 126 {
 		return fmt.Errorf("n must be between 0 and 126, inclusively: n=%d k=%d", n, k)
 	}

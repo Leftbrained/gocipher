@@ -8,11 +8,11 @@ import (
 
 type Vigenere struct {
 	keyLen  int
-	ciphers []gocipher.Cipher
+	ciphers []gocipher.CharacterCipher
 }
 
 type VigenereConfig struct {
-	newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error)
+	newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.CharacterCipher, error)
 }
 
 type VigenereOption func(*VigenereConfig)
@@ -23,11 +23,11 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	size := len(key)
 	c := Vigenere{
 		keyLen:  size,
-		ciphers: make([]gocipher.Cipher, size),
+		ciphers: make([]gocipher.CharacterCipher, size),
 	}
 
 	cfg := &VigenereConfig{
-		newSubstitution: func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error) {
+		newSubstitution: func(key []byte, opts ...SubstitutionOption) (gocipher.CharacterCipher, error) {
 			return NewSubstitution(key, opts...)
 		},
 	}
@@ -57,7 +57,7 @@ func NewVigenere(key []byte, opts ...VigenereOption) (*Vigenere, error) {
 	return &c, nil
 }
 
-func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.Cipher, error)) VigenereOption {
+func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...SubstitutionOption) (gocipher.CharacterCipher, error)) VigenereOption {
 	return func(cfg *VigenereConfig) {
 		cfg.newSubstitution = newSubstitution
 	}
@@ -65,14 +65,22 @@ func VigenereWithNewSubstitution(newSubstitution func(key []byte, opts ...Substi
 
 func (c *Vigenere) Encrypt(text []byte) []byte {
 	for i := 0; i < len(text); i++ {
-		text[i] = c.ciphers[i%c.keyLen].Encrypt(text[i : i+1])[0]
+		text[i] = c.ciphers[i%c.keyLen].EncryptByte(text[i])
 	}
 	return text
 }
 
 func (c *Vigenere) Decrypt(text []byte) []byte {
 	for i := 0; i < len(text); i++ {
-		text[i] = c.ciphers[i%c.keyLen].Decrypt(text[i : i+1])[0]
+		text[i] = c.ciphers[i%c.keyLen].DecryptByte(text[i])
 	}
 	return text
+}
+
+func (c *Vigenere) EncryptByte(from byte) byte {
+	return c.ciphers[0].EncryptByte(from)
+}
+
+func (c *Vigenere) DecryptByte(from byte) byte {
+	return c.ciphers[0].DecryptByte(from)
 }

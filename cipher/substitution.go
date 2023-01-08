@@ -85,6 +85,22 @@ func (c *Substitution) Decrypt(text []byte) []byte {
 	return text
 }
 
+func (c *Substitution) EncryptByte(from byte) byte {
+	if to, ok := c.encrypt[from]; ok {
+		return to
+	}
+
+	return from
+}
+
+func (c *Substitution) DecryptByte(from byte) byte {
+	if to, ok := c.decrypt[from]; ok {
+		return to
+	}
+
+	return from
+}
+
 // Sub ciphers
 func NewAtbash() (*Substitution, error) {
 	return NewSubstitution([]byte{}, SubstitutionWithCipherAlphabet([]byte("ZYXWVUTSRQPONMLKJIHGFEDCBA")))

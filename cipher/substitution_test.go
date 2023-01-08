@@ -110,6 +110,71 @@ func TestSubstitutionNewErrorPlainDuplicate(t *testing.T) {
 	}
 }
 
+func TestAtbashBasicCrypt(t *testing.T) {
+	c, err := NewAtbash()
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("GSVJFRXPYILDMULCQFNKHLEVIGSVOZABWLT"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
+}
+
+func TestCaesarBasicCrypt(t *testing.T) {
+	c, err := NewCaesar(7)
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("AOLXBPJRIYVDUMVEQBTWZVCLYAOLSHGFKVN"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
+}
+
+func TestCaesarNewRotationGreaterThanAlphabet(t *testing.T) {
+	c, err := NewCaesar(59)
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("AOLXBPJRIYVDUMVEQBTWZVCLYAOLSHGFKVN"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
+}
+
+func TestCaesarNewRotationLessThanZero(t *testing.T) {
+	c, err := NewCaesar(-45)
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("AOLXBPJRIYVDUMVEQBTWZVCLYAOLSHGFKVN"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
+}
+
+func TestRot13BasicCrypt(t *testing.T) {
+	c, err := NewRot13()
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCrypt(c, t,
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+		[]byte("GURDHVPXOEBJASBKWHZCFBIREGURYNMLQBT"),
+		[]byte("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG"),
+	)
+}
+
 func BenchmarkSubstitutionEncrypt(b *testing.B) {
 	c, _ := NewSubstitution([]byte("CRYPTOGRAPHY"))
 

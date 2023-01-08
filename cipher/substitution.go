@@ -84,3 +84,27 @@ func (c *Substitution) Decrypt(text []byte) []byte {
 
 	return text
 }
+
+// Sub ciphers
+func NewAtbash() (*Substitution, error) {
+	return NewSubstitution([]byte{}, SubstitutionWithCipherAlphabet([]byte("ZYXWVUTSRQPONMLKJIHGFEDCBA")))
+}
+
+func NewCaesar(shift int) (*Substitution, error) {
+	cipherAlphabet := make([]byte, 26)
+
+	shift %= 26
+	if shift < 0 {
+		shift += 26
+	}
+
+	for i := 0; i < 26; i++ {
+		cipherAlphabet[i] = byte(((shift + i) % 26) + 65)
+	}
+
+	return NewSubstitution([]byte{}, SubstitutionWithCipherAlphabet(cipherAlphabet))
+}
+
+func NewRot13() (*Substitution, error) {
+	return NewSubstitution([]byte{}, SubstitutionWithCipherAlphabet([]byte("NOPQRSTUVWXYZABCDEFGHIJKLM")))
+}

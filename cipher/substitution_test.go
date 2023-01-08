@@ -29,6 +29,17 @@ func TestSubstitutionBasicCrypt(t *testing.T) {
 	)
 }
 
+func TestSubstitutionBasicCryptByte(t *testing.T) {
+	c, err := NewSubstitution(
+		[]byte("CRYPTOGRAPHY"),
+	)
+	if err != nil {
+		t.Fatalf(`unexpected: could not instantiate: %q`, err.Error())
+	}
+
+	testCipherCryptByte(c, t, 'T', 'Q', 'T')
+}
+
 func TestSubstitutionNewWithPlainAlphabet(t *testing.T) {
 	c, err := NewSubstitution(
 		[]byte("CRYPTOGRAPHY"),

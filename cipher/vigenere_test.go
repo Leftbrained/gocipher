@@ -50,7 +50,7 @@ func TestVigenereNewErrorUpperBound(t *testing.T) {
 func TestVigenereNewErrorInvalidSubstitutionCipher(t *testing.T) {
 	c, err := NewVigenere(
 		[]byte("ABYZ"),
-		VigenereWithNewSubstitution(func([]byte, ...SubstitutionOption) (gocipher.Cipher, error) {
+		VigenereWithNewSubstitution(func([]byte, ...SubstitutionOption) (gocipher.CharacterCipher, error) {
 			return nil, fmt.Errorf("random failure")
 		}),
 	)

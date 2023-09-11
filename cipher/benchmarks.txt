@@ -1,0 +1,20 @@
+goos: linux
+goarch: amd64
+pkg: github.com/leftbrained/gocipher/cipher
+cpu: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
+BenchmarkAdfgvxEncrypt-8          	  194260	      6040 ns/op	     816 B/op	       4 allocs/op
+BenchmarkAdfgvxDecrypt-8          	  221646	      5276 ns/op	     816 B/op	       4 allocs/op
+BenchmarkAdfgxEncrypt-8           	  154333	      7598 ns/op	     816 B/op	       4 allocs/op
+BenchmarkAdfgxDecrypt-8           	  223179	      5257 ns/op	     816 B/op	       4 allocs/op
+BenchmarkPlayfairEncrypt-8        	  156687	      8050 ns/op	    3456 B/op	     139 allocs/op
+BenchmarkPlayfairDecrypt-8        	  140761	      8754 ns/op	    3456 B/op	     139 allocs/op
+BenchmarkPolybiusEncrypt-8        	  286568	      3784 ns/op	     288 B/op	       1 allocs/op
+BenchmarkPolybiusDecrypt-8        	  398138	      3086 ns/op	     144 B/op	       1 allocs/op
+BenchmarkSubstitutionEncrypt-8    	  521220	      2308 ns/op	       0 B/op	       0 allocs/op
+BenchmarkSubstitutionDecrypt-8    	  530301	      2184 ns/op	       0 B/op	       0 allocs/op
+BenchmarkTranspositionEncrypt-8   	 1000000	      1210 ns/op	     240 B/op	       2 allocs/op
+BenchmarkTranspositionDecrypt-8   	  988573	      1178 ns/op	     240 B/op	       2 allocs/op
+BenchmarkVigenereEncrypt-8        	  356086	      3398 ns/op	       0 B/op	       0 allocs/op
+BenchmarkVigenereDecrypt-8        	  386062	      3072 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/leftbrained/gocipher/cipher	17.286s
